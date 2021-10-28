@@ -18,7 +18,7 @@ namespace Core.Models
         public string Description { get; set; }
 
         [StringLength(50)]
-        public string Owner { get; set; }
+        public string? Owner { get; set; }
 
         // 41. Добавляем свой кастомный атрибут
         [Ticket_EnteredDatePresentceValidator]

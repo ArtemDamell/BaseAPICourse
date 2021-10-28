@@ -5,6 +5,9 @@
 
 //using WebAPIBasic.Filters;
 
+using DataStore.EF;
+using Microsoft.EntityFrameworkCore;
+
 var builder = WebApplication.CreateBuilder(args);
 
 /*Это место специально для конфигурации зависимостей*/
@@ -18,6 +21,10 @@ builder.Services.AddControllers();
 //{
 //    options.Filters.Add<DiscontinueVersion1ResourseFilter>();
 //});
+
+// 48 Конфигурируем EF
+builder.Services.AddDbContext<AppDbContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 // 7.2 Конфигурируем swagger
 builder.Services.AddSwaggerGen(x =>
