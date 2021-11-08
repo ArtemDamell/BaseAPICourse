@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DataStore.EF.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20211028144440_InitDb")]
-    partial class InitDb
+    [Migration("20211102184404_InitDB")]
+    partial class InitDB
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {

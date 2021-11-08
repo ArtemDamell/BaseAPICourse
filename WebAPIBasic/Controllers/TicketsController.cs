@@ -1,5 +1,7 @@
 ﻿using Core.Models;
+using DataStore.EF;
 using Microsoft.AspNetCore.Mvc;
+using System.Diagnostics;
 //using WebAPIBasic.Filters;
 //using WebAPIBasic.Models;
 
@@ -29,6 +31,13 @@ namespace WebAPIBasic.Controllers
     //[DiscontinueVersion1ResourseFilter]
     public class TicketsController : ControllerBase
     {
+        // 55.1 Внедряем зависимость базы данных
+        private readonly AppDbContext _db;
+        public TicketsController(AppDbContext db)
+        {
+            _db = db;
+        }
+
         /*
             4.2 Для маршрутизации одного класса мало, нужны конечные точки
             Ими будут служить наши методы действий, декарированные атрибутами
@@ -45,7 +54,24 @@ namespace WebAPIBasic.Controllers
          */
         public IActionResult Get()
         {
-            return Ok("Reading all the tickets.");
+            // 55.2 Переписываем метод получения всех билетов, старая реализация закомментирована
+            //return Ok("Reading all the tickets.");
+            List<Ticket> allTickets = new();
+
+            try
+            {
+                allTickets = _db.Tickets.ToList();
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex.Message);
+            }
+            
+
+            if (allTickets is null)
+                return NotFound();
+
+            return Ok(allTickets);
         }
 
         /*
@@ -57,7 +83,24 @@ namespace WebAPIBasic.Controllers
         //[Route("api/tickets/{id}")]
         public IActionResult GetById(int id)
         {
-            return Ok($"Reading ticket #{id}.");
+            // 55.3 Переписываем метод получения всех билетов, старая реализация закомментирована
+            //return Ok($"Reading ticket #{id}.");
+
+            Ticket? ticket = new();
+
+            try
+            {
+                ticket = _db.Tickets.Find(id);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex.Message);
+            }
+
+            if (ticket is null)
+                return NotFound();
+
+            return Ok(ticket);
         }
 
         /* ОРИГИНАЛЬНЫЙ МЕТОД (Начальный)
