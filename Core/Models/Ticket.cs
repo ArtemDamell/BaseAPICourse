@@ -29,7 +29,7 @@ namespace Core.Models
         [Ticket_FutureDateOnCreationValidator]
         [Ticket_EventDateAfterEnteredDateValidator]
         public DateTime? EventDate { get; set; }
-        public Project Project { get; set; }
+        public Project? Project { get; set; }
 
         // 36.1 Создаём метод валидации проверки, в будущем ли дата события
         /// <summary>
@@ -81,6 +81,13 @@ namespace Core.Models
             if (!EventDate.HasValue || !EnteredDate.HasValue)
                 return true;
             return EventDate.Value.Date >= EnteredDate.Value.Date;
+        }
+
+        // 59.2 Создаём метод валидации свойства Description
+        public bool ValidateDescription()
+        {
+            return !string.IsNullOrWhiteSpace(Description);
+            // 59.3 <-- Возвращаемся в Ticket_EnshureDescriptionPresent
         }
     }
 }

@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations;
 namespace Core.ValidationAttributes
 {
     // 40
-    internal class Ticket_EventDatePresentceValidator : ValidationAttribute
+    public class Ticket_EventDatePresentceValidator : ValidationAttribute
     {
         protected override ValidationResult? IsValid(object? value, ValidationContext validationContext)
         {

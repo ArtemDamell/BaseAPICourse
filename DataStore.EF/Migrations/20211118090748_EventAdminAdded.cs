@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace DataStore.EF.Migrations
 {
-    public partial class InitDB : Migration
+    public partial class EventAdminAdded : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -20,6 +20,30 @@ namespace DataStore.EF.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Projects", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "EventAdministrators",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    FirstName = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    LastName = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    Age = table.Column<int>(type: "int", nullable: false),
+                    Phone = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Address = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    ProjectId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_EventAdministrators", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_EventAdministrators_Projects_ProjectId",
+                        column: x => x.ProjectId,
+                        principalTable: "Projects",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -57,19 +81,29 @@ namespace DataStore.EF.Migrations
                 values: new object[] { 2, "Project 2" });
 
             migrationBuilder.InsertData(
-                table: "Tickets",
-                columns: new[] { "Id", "Description", "EnteredDate", "EventDate", "Owner", "ProjectId", "Title" },
-                values: new object[] { 1, "Ticket for Project 1", null, null, null, 1, "Ticket 1" });
+                table: "EventAdministrators",
+                columns: new[] { "Id", "Address", "Age", "FirstName", "LastName", "Phone", "ProjectId" },
+                values: new object[,]
+                {
+                    { 1, "Somestreet 1", 34, "Admin 1", "Adminov 1", "0409612987", 1 },
+                    { 2, "Somestreet 2", 23, "Admin 2", "Adminov 2", "0419397987", 1 },
+                    { 3, "Somestreet 3", 40, "Admin 3", "Adminov 3", "0459697145", 2 }
+                });
 
             migrationBuilder.InsertData(
                 table: "Tickets",
                 columns: new[] { "Id", "Description", "EnteredDate", "EventDate", "Owner", "ProjectId", "Title" },
-                values: new object[] { 2, "Ticket for Project 1", null, null, null, 1, "Ticket 2" });
+                values: new object[,]
+                {
+                    { 1, "Ticket for Project 1", null, null, null, 1, "Ticket 1" },
+                    { 2, "Ticket for Project 1", null, null, null, 1, "Ticket 2" },
+                    { 3, "Ticket for Project 2", null, null, null, 2, "Ticket 3" }
+                });
 
-            migrationBuilder.InsertData(
-                table: "Tickets",
-                columns: new[] { "Id", "Description", "EnteredDate", "EventDate", "Owner", "ProjectId", "Title" },
-                values: new object[] { 3, "Ticket for Project 2", null, null, null, 2, "Ticket 3" });
+            migrationBuilder.CreateIndex(
+                name: "IX_EventAdministrators_ProjectId",
+                table: "EventAdministrators",
+                column: "ProjectId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Tickets_ProjectId",
@@ -79,6 +113,9 @@ namespace DataStore.EF.Migrations
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.DropTable(
+                name: "EventAdministrators");
+
             migrationBuilder.DropTable(
                 name: "Tickets");
 

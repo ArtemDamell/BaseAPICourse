@@ -17,10 +17,82 @@ namespace DataStore.EF.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "6.0.0-rc.2.21480.5")
+                .HasAnnotation("ProductVersion", "6.0.0")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder, 1L, 1);
+
+            modelBuilder.Entity("Core.Models.EventAdministrator", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<string>("Address")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<int>("Age")
+                        .HasColumnType("int");
+
+                    b.Property<string>("FirstName")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<string>("LastName")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<string>("Phone")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("ProjectId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ProjectId");
+
+                    b.ToTable("EventAdministrators");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Address = "Somestreet 1",
+                            Age = 34,
+                            FirstName = "Admin 1",
+                            LastName = "Adminov 1",
+                            Phone = "0409612987",
+                            ProjectId = 1
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Address = "Somestreet 2",
+                            Age = 23,
+                            FirstName = "Admin 2",
+                            LastName = "Adminov 2",
+                            Phone = "0419397987",
+                            ProjectId = 1
+                        },
+                        new
+                        {
+                            Id = 3,
+                            Address = "Somestreet 3",
+                            Age = 40,
+                            FirstName = "Admin 3",
+                            LastName = "Adminov 3",
+                            Phone = "0459697145",
+                            ProjectId = 2
+                        });
+                });
 
             modelBuilder.Entity("Core.Models.Project", b =>
                 {
@@ -111,6 +183,17 @@ namespace DataStore.EF.Migrations
                             ProjectId = 2,
                             Title = "Ticket 3"
                         });
+                });
+
+            modelBuilder.Entity("Core.Models.EventAdministrator", b =>
+                {
+                    b.HasOne("Core.Models.Project", "Project")
+                        .WithMany()
+                        .HasForeignKey("ProjectId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Project");
                 });
 
             modelBuilder.Entity("Core.Models.Ticket", b =>

@@ -7,6 +7,9 @@
 
 using DataStore.EF;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Versioning;
+using WebAPIBasic.Swagger;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -22,6 +25,24 @@ builder.Services.AddControllers();
 //    options.Filters.Add<DiscontinueVersion1ResourseFilter>();
 //});
 
+// 61. Конфигурируем библиотеку Versioning
+builder.Services.AddApiVersioning(options =>
+{
+    // Версия по умолчанию
+    options.AssumeDefaultVersionWhenUnspecified = true;
+    options.DefaultApiVersion = new ApiVersion(1, 0);
+
+    // Возвращаем в ответе использованную версию API
+    options.ReportApiVersions = true;
+
+    // Настройка для поиска версии в заголовках запроса
+    // 64. Закомментировать в классе Pogram метод указания заголовка для версии
+    //options.ApiVersionReader = new HeaderApiVersionReader("X-API-Version");
+});
+
+// 73. Внедрить зависимость AutoMapper
+builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+
 // 48 Конфигурируем EF
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
@@ -30,7 +51,20 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 builder.Services.AddSwaggerGen(x =>
 {
     x.SwaggerDoc("v1", new() { Title = "Web API Base Course", Version = "v1" });
+
+    //78.2 / 78.2 Конфигурируем поддержку версий в Swagger
+    x.SwaggerDoc("v2", new() { Title = "Web API Base Course", Version = "v2" });
+
+    // 63.2/63.2 Конфигурируем заголовок для версии API
+    //x.OperationFilter<CustomHeaderSwaggerAttribute>();
 });
+
+// 77. Конфигурируем библиотеку в классе Program
+builder.Services.AddVersionedApiExplorer( options =>
+{
+    options.GroupNameFormat = "'v'VVV";
+});
+// 77.************************************************************
 
 /****************************************************/
 
@@ -39,8 +73,14 @@ var app = builder.Build();
 // 7.1 Добавляем функционал Swagger
 if (app.Environment.IsDevelopment())
 {
+    app.UseDeveloperExceptionPage();
+
     app.UseSwagger();
-    app.UseSwaggerUI(x => x.SwaggerEndpoint("/swagger/v1/swagger.json", "Web API Basic Course v1"));
+    app.UseSwaggerUI(x => {
+        x.SwaggerEndpoint("/swagger/v1/swagger.json", "Web API Basic Course v1");
+        //78.1 / 78.2 Конфигурируем поддержку версий в Swagger
+        x.SwaggerEndpoint("/swagger/v2/swagger.json", "Web API Basic Course v2");
+        });
 }
 
 // Тут у нас находится маршрут по умолчанию

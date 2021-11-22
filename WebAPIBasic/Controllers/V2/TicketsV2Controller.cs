@@ -3,18 +3,23 @@ using DataStore.EF;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Diagnostics;
+using WebAPIBasic.Filters.V2;
 
-// 56. Переписатл все методы, чтобы избавиться от грязи в коде
-namespace WebAPIBasic.Controllers
+// 58. Копируем контроллер для второй версии  
+namespace WebAPIBasic.Controllers.V2
 {
-    // 62.3/62.3 Добавляем атрибут явного указания версии
-    [ApiVersion("1.0")]
+    // 62.1/62.3 Добавляем атрибут явного указания версии
+    [ApiVersion("2.0")]
     [ApiController]
-    [Route("api/[controller]")]
-    public class TicketsController : ControllerBase
+    // 65. Комментирую оригинальный маршрут и указываю версию в новом
+    [Route("api/tickets")]
+    //[Route("api/v{v:apiVersion}/tickets")]
+
+    // 66. При передачи версии API через строку запроса, просто добавляем к адресу параметр ?api-version=2.0
+    public class TicketsV2Controller : ControllerBase
     {
         private readonly AppDbContext _db;
-        public TicketsController(AppDbContext db)
+        public TicketsV2Controller(AppDbContext db)
         {
             _db = db;
         }
@@ -60,6 +65,8 @@ namespace WebAPIBasic.Controllers
         }
 
         [HttpPost]
+        // 60.1 Добавляем атрибут
+        [Ticket_EnshureDescriptionPresentActionFilter]
         public async Task<IActionResult> Post([FromBody] Ticket ticket)
         {
             if (ticket is null)
@@ -81,6 +88,8 @@ namespace WebAPIBasic.Controllers
         }
 
         [HttpPut("{id}")]
+        // 60.1 Добавляем атрибут
+        [Ticket_EnshureDescriptionPresentActionFilter]
         public async Task<IActionResult> Put(int id, [FromBody] Ticket ticket)
         {
             if (id != ticket.Id)

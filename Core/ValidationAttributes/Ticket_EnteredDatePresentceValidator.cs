@@ -7,7 +7,7 @@ using System.Text;
 namespace Core.ValidationAttributes
 {
     // 39
-    internal class Ticket_EnteredDatePresentceValidator : ValidationAttribute
+    public class Ticket_EnteredDatePresentceValidator : ValidationAttribute
     {
         protected override ValidationResult? IsValid(object? value, ValidationContext validationContext)
         {
