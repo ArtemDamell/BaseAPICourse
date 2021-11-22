@@ -3,7 +3,9 @@ using DataStore.EF;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Diagnostics;
+using System.Linq;
 using WebAPIBasic.Filters.V2;
+using WebAPIBasic.QueryFilters;
 
 // 58. Копируем контроллер для второй версии  
 namespace WebAPIBasic.Controllers.V2
@@ -25,23 +27,45 @@ namespace WebAPIBasic.Controllers.V2
         }
 
         [HttpGet]
-        public async Task<IActionResult> Get()
+        // 80.1 Новый фильтр в метод GET в параметр
+        public async Task<IActionResult> Get([FromQuery] TicketQueryFilter ticketQueryFilter)
         {
             List<Ticket> allTickets = new();
 
             try
             {
-                allTickets = await _db.Tickets.ToListAsync();
+                IQueryable<Ticket> queryTickets = _db.Tickets;
+                // 80.2 Добавляем логику фильтра
+                if (ticketQueryFilter is not null)
+                {
+                    if (ticketQueryFilter.Id.HasValue)
+                        queryTickets = queryTickets.Where(x => x.Id == ticketQueryFilter.Id);
+                    if (!string.IsNullOrWhiteSpace(ticketQueryFilter.Title))
+                        queryTickets = queryTickets.Where(x => x.Title.ToLower().Contains(ticketQueryFilter.Title.ToLower()/*, StringComparison.OrdinalIgnoreCase*/)); // <-- StringComparison.OrdinalIgnoreCase сравнивает строки, как будто они преобразованы в верхний регистр, без учёта культуры
+                    if (!string.IsNullOrWhiteSpace(ticketQueryFilter.Description))
+                        queryTickets = queryTickets.Where(x => x.Description.ToLower().Contains(ticketQueryFilter.Description.ToLower()/*, StringComparison.OrdinalIgnoreCase*/));
+
+                    if (!await queryTickets.AnyAsync())
+                        return NotFound();
+
+                    return Ok(await queryTickets.ToListAsync().ConfigureAwait(false));
+                }
+                // *****************************
+
+                //allTickets = await _db.Tickets.ToListAsync();
             }
             catch (Exception ex)
             {
                 Debug.WriteLine(ex.Message);
+                return BadRequest(ex.Message);
             }
 
-            if (allTickets is null)
-                return NotFound();
+            //if (allTickets is null)
+            //    return NotFound();
 
-            return Ok(allTickets);
+            //return Ok(allTickets);
+
+            return BadRequest();
         }
 
         [HttpGet("{id}")]
