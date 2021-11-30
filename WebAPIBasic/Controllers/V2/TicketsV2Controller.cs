@@ -30,7 +30,7 @@ namespace WebAPIBasic.Controllers.V2
         // 80.1 Новый фильтр в метод GET в параметр
         public async Task<IActionResult> Get([FromQuery] TicketQueryFilter ticketQueryFilter)
         {
-            List<Ticket> allTickets = new();
+            //List<Ticket> allTickets = new();
 
             try
             {
