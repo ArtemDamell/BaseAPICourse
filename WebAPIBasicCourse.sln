@@ -12,7 +12,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Core", "Core\Core.csproj", "{5AEE339C-4224-4559-9588-544DAF3CE454}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DataStore.EF", "DataStore.EF\DataStore.EF.csproj", "{0DE8DF61-972A-455B-B9C5-7DCB97AE53E8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DataStore.EF", "DataStore.EF\DataStore.EF.csproj", "{0DE8DF61-972A-455B-B9C5-7DCB97AE53E8}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "App.Repository", "App.Repository\App.Repository.csproj", "{2988EEBA-60A6-4D6E-8FC0-99172FBD1EE9}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "App.Testing.Console", "App.Testing.Console\App.Testing.Console.csproj", "{00A0BAA4-4451-49A3-B58F-4C6DC2C96EF7}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -32,6 +36,14 @@ Global
 		{0DE8DF61-972A-455B-B9C5-7DCB97AE53E8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0DE8DF61-972A-455B-B9C5-7DCB97AE53E8}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0DE8DF61-972A-455B-B9C5-7DCB97AE53E8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2988EEBA-60A6-4D6E-8FC0-99172FBD1EE9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2988EEBA-60A6-4D6E-8FC0-99172FBD1EE9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2988EEBA-60A6-4D6E-8FC0-99172FBD1EE9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2988EEBA-60A6-4D6E-8FC0-99172FBD1EE9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{00A0BAA4-4451-49A3-B58F-4C6DC2C96EF7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{00A0BAA4-4451-49A3-B58F-4C6DC2C96EF7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{00A0BAA4-4451-49A3-B58F-4C6DC2C96EF7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{00A0BAA4-4451-49A3-B58F-4C6DC2C96EF7}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
