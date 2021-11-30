@@ -39,7 +39,18 @@ namespace App.Repository.ApiClient
             // Формируем ответ для клиента
             var response = await _httpClient.PostAsJsonAsync(GetUrl(uri), obj);
             // Убеждаемся, что статус код ответа от конечной точки - 200 ОК
-            response.EnsureSuccessStatusCode();
+            // 86.1 Комментируем оригинальную реализацию и добавляем ошибку
+            //response.EnsureSuccessStatusCode();
+
+            // 86.2 Это реализация метода обработки ошибки, извлечём из него метод
+            //      Так, как мы будем использовать эту логику в нескольких методах
+            //      Для этого нажимаем ПКМ -> Extract method
+            //if (!response.IsSuccessStatusCode)
+            //{
+            //    var error = await response.Content.ReadAsStringAsync();
+            //    throw new HttpRequestException(error);
+            //}
+            await HandleError(response);
 
             // Возвращаем ответ клиенту
             return await response.Content.ReadFromJsonAsync<T>();
@@ -51,7 +62,9 @@ namespace App.Repository.ApiClient
             // Формируем ответ для клиента
             var response = await _httpClient.PutAsJsonAsync(GetUrl(uri), obj);
             // Убеждаемся, что статус код ответа от конечной точки - 200 ОК
-            response.EnsureSuccessStatusCode();
+            // 86.3
+            //response.EnsureSuccessStatusCode();
+            await HandleError(response);
         }
 
         // 83.7 Создаём универсальный метод для DELETE запросов
@@ -60,7 +73,9 @@ namespace App.Repository.ApiClient
             // Формируем ответ для клиента
             var response = await _httpClient.DeleteAsync(GetUrl(uri));
             // Убеждаемся, что статус код ответа от конечной точки - 200 ОК
-            response.EnsureSuccessStatusCode();
+            // 86.4
+            //response.EnsureSuccessStatusCode();
+            await HandleError(response);
         }
 
         // 83.4
@@ -68,5 +83,15 @@ namespace App.Repository.ApiClient
         {
             return $"{_baseUrl}/{uri}";
         }
+
+        private static async Task HandleError(HttpResponseMessage response)
+        {
+            if (!response.IsSuccessStatusCode)
+            {
+                var error = await response.Content.ReadAsStringAsync();
+                throw new HttpRequestException(error);
+            }
+        }
+
     }
 }
