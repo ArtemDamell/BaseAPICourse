@@ -6,7 +6,7 @@ using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using System.Net.Http.Json;
 
-namespace App.Repository.ApiClient
+namespace MyApp.Repository.ApiClient
 {
     // 83. Создаём класс прослойки для конечных точек и приложением
     public class WebApiExecuter : IWebApiExecuter

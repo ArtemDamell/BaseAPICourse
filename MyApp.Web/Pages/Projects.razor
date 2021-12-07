@@ -1,0 +1,51 @@
+﻿@*91.1 Создаём компонент UI пользователя для вывода проектов*@
+@page "/projects"
+@inject IProjectsScreen _projects
+
+<div class="row">
+    <div class="col">
+        <h1 class="text-info">Projects list</h1>
+    </div>
+</div>
+
+@if (projects is null)
+{
+    <div class="row">
+        <div class="col alert alert-alert-info text-center">
+            Loading projects ... Please, wait ...
+        </div>
+    </div>
+}
+else if (projects.Any())
+{
+    @foreach (var item in projects)
+    {
+        <div class="row">
+            <div class="col">
+            </div>
+        </div>
+    }
+}
+else
+{
+    <div class="row">
+        <div class="col alert alert-alert-warning text-center">
+            No projects found!
+        </div>
+    </div>
+}
+
+
+@code {
+    // 91.2 Нам понадобится массив для хранения списка проектов
+    IEnumerable<Project> projects;
+
+    protected override async Task OnInitializedAsync()
+    {
+        // 91.3 Получаем данные через класс ProjectScreen
+        // Извлекаем интерфейс из этого класса
+        projects = await _projects.ViewProjects();
+
+        // 91.4 Конфигурируем зависимость в классе Program
+    }
+}

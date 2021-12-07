@@ -1,17 +1,17 @@
-﻿using App.Repository.ApiClient;
+﻿using MyApp.Repository.ApiClient;
 using Core.Models;
 using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace App.Repository
+namespace MyApp.Repository
 {
     // 84. Создаём класс для доступа к проектам
     // Теперь нам надо использовать ранее созданный класс. Мы можем его использовать
     // Напрямую, или же через интерфейс. Переходим в WebApiExecuter, нажимаем на название класса ПКМ
     // И экстрактируем Interface (Extract Interface) и нажимаем OK
-    public class ProjectRepository
+    public class ProjectRepository : IProjectRepository
     {
         private readonly IWebApiExecuter _webApiExecuter;
 

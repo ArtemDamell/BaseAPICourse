@@ -38,11 +38,14 @@ namespace WebAPIBasic.Controllers.V2
                 {
                     if (ticketQueryFilter.Id.HasValue)
                         queryTickets = queryTickets.Where(x => x.Id == ticketQueryFilter.Id);
-                    if (!string.IsNullOrWhiteSpace(ticketQueryFilter.Title))
-                        queryTickets = queryTickets.Where(x => x.Title.ToLower().Contains(ticketQueryFilter.Title.ToLower()/*, StringComparison.OrdinalIgnoreCase*/)); // <-- StringComparison.OrdinalIgnoreCase сравнивает строки, как будто они преобразованы в верхний регистр, без учёта культуры
-                    if (!string.IsNullOrWhiteSpace(ticketQueryFilter.Description))
-                        queryTickets = queryTickets.Where(x => x.Description.ToLower().Contains(ticketQueryFilter.Description.ToLower()/*, StringComparison.OrdinalIgnoreCase*/));
-
+                    // 87.4 Редактируем TicketV2Controller ******************
+                    if (!string.IsNullOrWhiteSpace(ticketQueryFilter.TitleOrDescription))
+                        queryTickets = queryTickets.Where(x => x.Title.ToLower().Contains(ticketQueryFilter.TitleOrDescription.ToLower()/*, StringComparison.OrdinalIgnoreCase*/)
+                        || x.Description.ToLower().Contains(ticketQueryFilter.TitleOrDescription.ToLower())); // <-- StringComparison.OrdinalIgnoreCase сравнивает строки, как будто они преобразованы в верхний регистр, без учёта культуры
+                    //if (!string.IsNullOrWhiteSpace(ticketQueryFilter.Description))
+                    //    queryTickets = queryTickets.Where(x => x.Description.ToLower().Contains(ticketQueryFilter.Description.ToLower()/*, StringComparison.OrdinalIgnoreCase*/));
+                    // --> 87.5 Возвращаемся в TicketRepository
+                    // ******************************************************
                     if (!await queryTickets.AnyAsync())
                         return NotFound();
 
