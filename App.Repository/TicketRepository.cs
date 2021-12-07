@@ -12,11 +12,13 @@ namespace MyApp.Repository
     {
         // 87.2 Внедряем зависимость класса Executer
         private readonly IWebApiExecuter _webApiExecuter;
+
         public TicketRepository(IWebApiExecuter webApiExecuter)
         {
             _webApiExecuter = webApiExecuter;
         }
 
+        // 87.2 Создаём метод получения всех проектов
         public async Task<IEnumerable<Ticket>> GetAsync(string filter = null)
         {
             // --> 87.3 После создания этого метода, редактируем класс TicketQueryFilter
@@ -57,3 +59,6 @@ namespace MyApp.Repository
         }
     }
 }
+
+// -->87.7 Далее идём в консольный класс Program и пишем тесты для нового контроллера
+
