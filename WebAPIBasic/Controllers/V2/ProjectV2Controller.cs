@@ -4,6 +4,7 @@ using Core.Models;
 using DataStore.EF;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using WebAPIBasic.QueryFilters;
 
 // 56. Переписатл все методы, чтобы избавиться от грязи в коде
 namespace WebAPIBasic.Controllers.V2
@@ -40,15 +41,33 @@ namespace WebAPIBasic.Controllers.V2
             return Ok(project);
         }
 
-        [HttpGet]
-        [Route("/api/projects/{pId}/tickets")]
-        public async Task<IActionResult> GetProjectTicket(int pId)
-        {
-            var tickets = await _db.Tickets.Where(x => x.ProjectId == pId).ToListAsync();
+        // 105.6 Меняем метод получения
+        //[HttpGet]
+        //[Route("/api/projects/{pId}/tickets")]
+        //public async Task<IActionResult> GetProjectTicket(int pId)
+        //{
+        //    var tickets = await _db.Tickets.Where(x => x.ProjectId == pId).ToListAsync();
 
-            if (tickets is null || !tickets.Any())
+        //    if (tickets is null || !tickets.Any())
+        //        return NotFound();
+        //    return Ok(tickets);
+        //}
+        [HttpGet]
+        [Route("/api/projects/{pId:int}/tickets")]
+        public async Task<IActionResult> GetProjectTicket(int pId, [FromQuery] ProjectTicketQueryFilter filter)
+        {
+            IQueryable<Ticket> tickets = _db.Tickets.Where(x => x.ProjectId == pId);
+
+            if (filter is not null && !string.IsNullOrWhiteSpace(filter.Owner))
+                tickets = tickets.Where(x => !string.IsNullOrWhiteSpace(x.Owner) && x.Owner.ToLower() == filter.Owner.ToLower());
+
+            var listOfTickets = await tickets.ToListAsync();
+
+            if (listOfTickets is null || !listOfTickets.Any())
                 return NotFound();
-            return Ok(tickets);
+            return Ok(listOfTickets);
+
+            // --> После проверки на работоспособность, переходим в ProjectTickets проекта MyApp.Web
         }
 
         [HttpPost]

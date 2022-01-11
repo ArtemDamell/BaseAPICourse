@@ -21,7 +21,7 @@ namespace MyApp.Business
         public async Task<IEnumerable<Project>> ViewProjects()
         {
             // --> 88.3 На этом месте извлекаем интерфейсы из Projects и TicketsRepository
-            return await _projectRepository.GetAsync();
+            return await _projectRepository.GetAsync(); 
         }
     }
 }

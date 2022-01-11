@@ -116,12 +116,12 @@ async Task GetProjectTickets(int id)
     WriteLine($"Project: {project.Name}");
 
     ProjectRepository repository = new(webApiExecuter);
-    var tickets = await repository.GetProjectTicketsAsync(id);
+    //var tickets = await repository.GetProjectTicketsAsync(id);
 
-    foreach (var ticket in tickets)
-    {
-        WriteLine($"Project: {ticket.Title}");
-    }
+    //foreach (var ticket in tickets)
+    //{
+    //    WriteLine($"Project: {ticket.Title}");
+    //}
 }
 
 async Task<int> CreateProject()
@@ -186,7 +186,7 @@ async Task TestTickets()
     WriteLine("Reading all tickets");
 
     // 85.2 Вызываем созданный метод
-    await GetTickets();
+    await GetTicketsAsync();
 
     WriteLine("Tickets is readed! Next step start");
     WriteLine("------------------------------------\n");
@@ -211,7 +211,7 @@ async Task TestTickets()
 }
 
 
-async Task GetTickets()
+async Task GetTicketsAsync()
 {
     TicketRepository repository = new(webApiExecuter);
     var tickets = await repository.GetAsync();
@@ -221,7 +221,7 @@ async Task GetTickets()
     }
 }
 
-async Task<Ticket> GetTicket(int id)
+async Task<Ticket> GetTicketById(int id)
 {
     TicketRepository repository = new(webApiExecuter);
     return await repository.GetByIdAsync(id);

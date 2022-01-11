@@ -46,8 +46,8 @@ namespace WebAPIBasic.Controllers.V2
                     //    queryTickets = queryTickets.Where(x => x.Description.ToLower().Contains(ticketQueryFilter.Description.ToLower()/*, StringComparison.OrdinalIgnoreCase*/));
                     // --> 87.5 Возвращаемся в TicketRepository
                     // ******************************************************
-                    if (!await queryTickets.AnyAsync())
-                        return NotFound();
+                    //if (!await queryTickets.AnyAsync())
+                    //    return new List<Ticket>();
 
                     return Ok(await queryTickets.ToListAsync().ConfigureAwait(false));
                 }

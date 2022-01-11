@@ -34,9 +34,9 @@ namespace DataStore.EF
                 );
 
             modelBuilder.Entity<Ticket>().HasData(
-                    new Ticket { Id = 1, Title = "Ticket 1", ProjectId = 1, Description = "Ticket for Project 1" },
-                            new Ticket { Id = 2, Title = "Ticket 2", ProjectId = 1, Description = "Ticket for Project 1" },
-                            new Ticket { Id = 3, Title = "Ticket 3", ProjectId = 2, Description = "Ticket for Project 2" }
+                    new Ticket { Id = 1, Title = "Ticket 1", ProjectId = 1, Description = "Ticket for Project 1", EventDate = new DateTime(2022, 2, 2), EnteredDate = new DateTime(2022, 2, 2), Owner = "Michael" },
+                            new Ticket { Id = 2, Title = "Ticket 2", ProjectId = 1, Description = "Ticket for Project 1", EventDate = new DateTime(2022, 2, 3), EnteredDate = new DateTime(2022, 2, 3), Owner = "Gabriel" },
+                            new Ticket { Id = 3, Title = "Ticket 3", ProjectId = 2, Description = "Ticket for Project 2", EventDate = new DateTime(2022, 3, 5), EnteredDate = new DateTime(2022, 3, 5), Owner = "Rafael" }
                 );
 
             // 69.2 / 69.2 Имплементируем начальные данные в базу

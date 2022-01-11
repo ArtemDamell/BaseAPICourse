@@ -59,10 +59,21 @@ builder.Services.AddSwaggerGen(x =>
     //x.OperationFilter<CustomHeaderSwaggerAttribute>();
 });
 
+// 93.1 Для того, чтобы подружить API и WebAssambly из-за разных доменов, конфигурируем в Program проекта WebAPI AddCorse
+builder.Services.AddCors(options =>
+{
+    options.AddDefaultPolicy(builder =>
+    {
+        builder.WithOrigins("https://localhost:44359")
+        .AllowAnyHeader()
+        .AllowAnyMethod();
+    });
+});
+
 // 77. Конфигурируем библиотеку в классе Program
 builder.Services.AddVersionedApiExplorer( options =>
 {
-    options.GroupNameFormat = "'v'VVV";
+    options.GroupNameFormat = "'v'VVV"; 
 });
 // 77.************************************************************
 
@@ -82,6 +93,9 @@ if (app.Environment.IsDevelopment())
         x.SwaggerEndpoint("/swagger/v2/swagger.json", "Web API Basic Course v2");
         });
 }
+
+// 93.2 Подключаем Middleware политики
+app.UseCors();
 
 // Тут у нас находится маршрут по умолчанию
 /*

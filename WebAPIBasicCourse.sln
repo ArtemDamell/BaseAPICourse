@@ -18,9 +18,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MyApp.Repository", "App.Rep
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "App.Testing.Console", "App.Testing.Console\App.Testing.Console.csproj", "{00A0BAA4-4451-49A3-B58F-4C6DC2C96EF7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MyApp.Business", "App.Business\MyApp.Business.csproj", "{89AAD300-10CA-4E4F-9D78-DAF4BF55D20A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MyApp.Business", "App.Business\MyApp.Business.csproj", "{89AAD300-10CA-4E4F-9D78-DAF4BF55D20A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MyApp.Web", "MyApp.Web\MyApp.Web.csproj", "{29A3C759-E6C7-4182-8630-5F944D537C5D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MyApp.Web", "MyApp.Web\MyApp.Web.csproj", "{29A3C759-E6C7-4182-8630-5F944D537C5D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

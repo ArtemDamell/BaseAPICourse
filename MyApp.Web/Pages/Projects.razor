@@ -18,13 +18,23 @@
 }
 else if (projects.Any())
 {
-    @foreach (var item in projects)
-    {
-        <div class="row">
-            <div class="col">
+    <div class="row">
+        @foreach (var item in projects)
+        {
+            <div class="col-auto mx-2">
+                <div class="card text-center border border-secondary">
+                    <div class="card-header">Project ID: @item.Id</div>
+                    <div class="card-body text-secondary">
+                        <h5 class="card-title">Project name: @item.Name</h5>
+                        <p class="card-text">
+                            @((item.Tickets?.Count > 0) ? $"Tickets count: {item.Tickets?.Count}" : "")
+                        </p>
+                        <NavLink class="btn-outline-primary" href="@($"/projects/{item.Id}/tickets")">View all tickets</NavLink>
+                    </div>
+                </div>
             </div>
-        </div>
-    }
+        }
+    </div>
 }
 else
 {

@@ -36,12 +36,25 @@ namespace MyApp.Repository
         }
 
         // 84.4 Создаём метод получения всех билетов в проекте по ID проекта
-        public async Task<IEnumerable<Ticket>> GetProjectTicketsAsync(int projectId)
-        {
-            return await _webApiExecuter.InvokeGet<IEnumerable<Ticket>>($"api/projects/{projectId}/tickets");
-        }
+        //public async Task<IEnumerable<Ticket>> GetProjectTicketsAsync(int projectId)
+        //{
+        //    return await _webApiExecuter.InvokeGet<IEnumerable<Ticket>>($"api/projects/{projectId}/tickets");
+        //}
 
-        // 84.5 Создаём метод создания проекта
+        // 105.2
+        public async Task<IEnumerable<Ticket>> GetProjectTicketsAsync(int projectId, string? filter = null)
+        {
+            // 105.4 Реализовываем логику
+            string uri = $"api/projects/{projectId}/tickets";
+
+            if (!string.IsNullOrWhiteSpace(filter))
+                uri += $"?Owner={filter}&api-version=2.0";
+
+            // *****************************
+            return await _webApiExecuter.InvokeGet<IEnumerable<Ticket>>(uri);
+            // Делаем PULL метода в интерфейс для изменений
+        }
+ 
         public async Task<int> CreateAsync(Project project)
         {
             project = await _webApiExecuter.InvokePost("api/project", project);

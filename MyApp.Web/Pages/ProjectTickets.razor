@@ -1,0 +1,128 @@
+﻿@*96. Создать компонент для вывода билетов проекта ProjectTickets*@
+@*96.1 Создаём компонент с маршрутом*@
+@page "/projects/{ProjectId:int}/tickets"
+
+@inject ITicketsScreen _db
+
+<div class="row">
+    <div class="col text-info"><h1>All tickets from project with ID: @ProjectId</h1></div>
+</div>
+
+@*103. Форма поиска (фильтр)*@
+<div class="row mb-3">
+    <div class="col">
+        <input type="text" class="form-control" @bind-value="searchFilter" />
+    </div>
+    <div class="col-auto">
+        <button type="button" class="btn btn-outline-primary" @onclick="SearchHandler">Search</button>
+    </div>
+    @*105.7.1 Добавляем checkbox*@
+    <div class="col-auto form-check form-switch  d-flex align-items-center">
+        <input class="form-check-input" type="checkbox" id="myticket" @bind-value="ViewMyTickets" />
+        <label class="form-check-label pt-1" for="myticket">View my tickets</label>
+    </div>
+</div>
+
+<div class="row">
+    @if (tickets is null)
+    {
+        <div class="col">
+            <div class="alert alert-info text-center">
+                <h3>Loading tickets, please wait ...</h3>
+            </div>
+        </div>
+    }
+    else if (tickets.Any())
+    {
+        @*100. Извлекаем повторяющийся кусок кода в отдельный компонент DisplayTicket*@
+        @foreach (var item in tickets)
+        {
+            @*<div class="col-sm-12 col-md-6 col-lg-3">
+
+                <div class="card text-center border-dark mb-3">
+                <div class="card-header">
+                @item.Title
+                </div>
+                <div class="card-body text-dark">
+                <h5 class="card-title">Event: @item?.Project?.Name</h5>
+                <p class="card-text">@item.Description</p>
+                </div>
+                <div class="card-footer text-muted">
+                <p class="text-success">Event date: @((item.EventDate.HasValue) ?item?.EventDate?.ToShortDateString() : "-- NO DATA --")</p>
+                <p class="text-danger">Entered date: @((item.EnteredDate.HasValue) ?item?.EnteredDate?.ToShortDateString() : "-- NO DATA --")</p>
+                <p class="text-primary">Owner: @item?.Owner</p>
+                </div>
+                </div>
+
+                </div>*@
+            <DisplayTicket Ticket="item" />
+        }
+        @*-------------------------------------------------------------------------*@
+    }
+    else
+    {
+        <div class="col">
+            <div class="alert alert-primary text-center">
+                <h3>No items found.</h3>
+            </div>
+        </div>
+    }
+
+</div>
+
+@if (!string.IsNullOrWhiteSpace(error))
+{
+    <div class="row">
+        <div class="col">
+            <div class="alert alert-danger text-center">
+                @error
+                @(error = string.Empty)
+            </div>
+        </div>
+    </div>
+}
+
+
+@code {
+    [Parameter] public int ProjectId { get; set; }
+
+    IEnumerable<Ticket> tickets;
+    string searchFilter;
+    string error;
+
+    // 105.7.2
+    bool viewMyTickets = false;
+    public bool ViewMyTickets
+    {
+        get => viewMyTickets;
+        set
+        {
+            viewMyTickets = value;
+
+            Task.Run(async () =>
+            {
+                if (viewMyTickets)
+                    tickets = await _db.SearchOwnersTicketsAsync(ProjectId, "Gabriel");
+                else
+                    tickets = await _db.ViewTickets(ProjectId);
+
+                StateHasChanged();
+            });
+        }
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        tickets = await _db.ViewTickets(ProjectId);
+    }
+
+    async Task SearchHandler()
+    {
+        var tempTickets = await _db.SearchTickets(searchFilter);
+
+        if (tempTickets is not null)
+            tickets = tempTickets;
+        else
+            error = $"Not found! Filter was {searchFilter}";
+    }
+}

@@ -1,0 +1,31 @@
+﻿@if (Ticket is not null)
+{
+    <div class="col-sm-12 col-md-6 col-lg-3">
+
+        <div class="text-center card border border-dark mb-3">
+            <div class="card-header">
+                @Ticket.Title
+            </div>
+            <div class="card-body text-dark">
+                <h5 class="card-title">Event: @Ticket?.Project?.Name</h5>
+                <p class="card-text">@Ticket.Description</p>
+            </div>
+            <div class="card-footer text-muted">
+                <p class="text-success">Event date: @((Ticket.EventDate.HasValue) ? Ticket?.EventDate?.ToShortDateString() : "-- NO DATA --")</p>
+                <p class="text-danger">Entered date: @((Ticket.EnteredDate.HasValue) ? Ticket?.EnteredDate?.ToShortDateString() : "-- NO DATA --")</p>
+                <p class="text-primary">Owner: @Ticket?.Owner</p>
+                <div>
+                    <NavLink class="btn btn-info" href="@($"/tickets/{Ticket.Id}")">
+                        Edit
+                    </NavLink>
+                </div>
+            </div>
+        </div>
+
+    </div>
+}
+
+
+@code {
+    [Parameter] public Ticket Ticket { get; set; }
+}

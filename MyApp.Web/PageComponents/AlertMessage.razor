@@ -1,0 +1,27 @@
+﻿@*109. Добавить новый компонент вывода ошибок AlertMessage*@
+
+<div class="row text-center" style="@($"display:{displayClass}")">
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        <strong>@ErrorMessage</strong>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" @onclick="Dismiss" aria-label="Close"></button>
+    </div>
+</div>
+
+
+@code {
+    public string ErrorMessage { get; set; }
+
+    string displayClass = "none";
+
+    public void Show()
+    {
+        displayClass = "block";
+        StateHasChanged();
+    }
+
+    public void Dismiss()
+    {
+        displayClass = "none";
+        ErrorMessage = string.Empty;
+    }
+}

@@ -8,7 +8,7 @@ namespace MyApp.Repository
     {
         Task<int> CreateAsync(Ticket ticket);
         Task DeleteAsync(int id);
-        Task<IEnumerable<Ticket>> GetAsync(string filter = null);
+        Task<IEnumerable<Ticket>> GetAsync(string? filter = null);
         Task<Ticket> GetByIdAsync(int id);
         Task UpdateAsync(Ticket ticket);
     }

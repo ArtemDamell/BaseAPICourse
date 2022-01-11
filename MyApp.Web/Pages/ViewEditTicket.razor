@@ -1,0 +1,115 @@
+﻿@*107 Добавляем новый компонент*@
+@*Далее переходим в DisplayTicket и делаем кнопку отображение/редактирование билета*@
+
+@page "/tickets/{ticketId:int}"
+
+@inject ITicketsScreen _db
+@inject NavigationManager _navManager
+
+<div class="row">
+    <div class="col text-center">
+        <h1 class="text-info">Ticket: @TicketId</h1>
+    </div>
+</div>
+
+@if (ticket is null)
+{
+    <div class="row">
+        <div class="col alert alert-info">
+            Loading data ...
+        </div>
+    </div>
+}
+else
+{
+    <AlertMessage @ref="alert" />
+    <div class="row">
+        <div class="col">
+            <EditForm Model="ticket" OnValidSubmit="UpdateHandler">
+                <DataAnnotationsValidator />
+                <ValidationSummary />
+
+                <div class="mb-3">
+                    <label for="titleInput" class="form-label">Title</label>
+                    <InputText class="form-control" id="titleInput" @bind-Value="ticket.Title" placeholder="Enter ticket title ..." />
+                </div>
+                <div class="mb-3">
+                    <label for="descriptionInput" class="form-label">Description</label>
+                    <InputTextArea class="form-control" id="descriptionInput" @bind-Value="ticket.Description" placeholder="Enter ticket description ..." />
+                </div>
+                <div class="mb-3">
+                    <label for="ownerInput" class="form-label">Owner</label>
+                    <InputText class="form-control" id="ownerInput" @bind-Value="ticket.Owner" placeholder="Enter ticket owner ..." readonly />
+                </div>
+                <div class="mb-3">
+                    <label for="eventDateInput" class="form-label">Event date</label>
+                    <InputDate class="form-control" id="eventDateInput" @bind-Value="ticket.EventDate" />
+                </div>
+                <div class="mb-3">
+                    <label for="enteredDateInput" class="form-label">Entered date</label>
+                    <InputDate class="form-control" id="enteredDateInput" @bind-Value="ticket.EnteredDate" />
+                </div>
+                <div>
+                    <button class="btn btn-outline-success" type="submit">Update</button>
+                    <NavLink class="btn btn-outline-danger" href="@($"/projects/{ticket.ProjectId}/tickets")">Return to tickets</NavLink>
+                </div>
+            </EditForm>
+        </div>
+    </div>
+}
+
+
+@code {
+    [Parameter] public int TicketId { get; set; }
+
+    Ticket ticket;
+    AlertMessage alert;
+    bool isValid = true;
+
+    // Мы используем метод OnParametersSet т.к. мы должны быть уверены, что в переменной TicketId уже точно есть значение
+    protected override async Task OnParametersSetAsync()
+    {
+        ticket = await _db.ViewTicketByIdAsync(TicketId);
+    }
+
+    async Task UpdateHandler()
+    {
+        if (!ticket.ValidateDescription())
+        {
+            alert.ErrorMessage = "Description is REQUIRED";
+            alert.Show();
+            isValid = false;
+        }
+        //if (!ticket.ValidateFutureEventDate())
+        //{
+        //    alert.ErrorMessage = "Event date must be future";
+        //    alert.Show();
+        //    isValid = false;
+        //}
+        if (!ticket.ValidateEventDatePresence())
+        {
+            alert.ErrorMessage = "Event date is REQUIRED";
+            alert.Show();
+            isValid = false;
+        }
+        if (!ticket.ValidateEnteredDatePresence())
+        {
+            alert.ErrorMessage = "Entered date is REQUIRED";
+            alert.Show();
+            isValid = false;
+        }
+        //if (!ticket.ValidateEventDateAfterEnteredDate())
+        //{
+        //    alert.ErrorMessage = "Entered date must be later that Event date";
+        //    alert.Show();
+        //    isValid = false;
+        //}
+
+        if (isValid)
+        {
+            await _db.UpdateTicketAsync(ticket);
+            _navManager.NavigateTo($"/projects/{ticket.ProjectId}/tickets");
+        }
+        
+    }
+}
