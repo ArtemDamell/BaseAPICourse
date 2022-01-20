@@ -56,5 +56,18 @@ namespace MyApp.Business
             await _ticketRepository.UpdateAsync(ticket);
             // После этого делаем PULL в интерфейс нового метода
         }
+
+        // 110. В MyApp.Business добавить новый метод в класс TicketsScreen, AddTicket()
+        public async Task<int> CreateTicketAsync(Ticket ticketForCreation)
+        {
+            return await _ticketRepository.CreateAsync(ticketForCreation);
+        }
+
+        // 115. В классе TicketScreen добавить метод удаления билетов
+        public async Task DeleteTicketAsync(int ticketId)
+        {
+            await _ticketRepository.DeleteAsync(ticketId);
+            // После этого делаем PULL в интерфейс нового метода
+        }
     }
 }

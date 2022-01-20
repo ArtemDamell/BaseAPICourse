@@ -55,9 +55,19 @@
                 </div>
 
                 </div>*@
-            <DisplayTicket Ticket="item" />
+            <div class="col-sm-12 col-md-6 col-lg-3">
+                <DisplayTicket Ticket="item" ShowButtons="true" />
+            </div>
         }
         @*-------------------------------------------------------------------------*@
+
+        @*111. В компоненте ProjectTickets добавить кнопку добавления нового билета*@
+        <div class="row justify-content-center">
+            <div class="col-3">
+                <NavLink class="btn btn-success" href="@($"projects/{ProjectId}/addticket")">Add Ticket</NavLink>
+            </div>
+        </div>
+
     }
     else
     {
@@ -125,4 +135,5 @@
         else
             error = $"Not found! Filter was {searchFilter}";
     }
+
 }
