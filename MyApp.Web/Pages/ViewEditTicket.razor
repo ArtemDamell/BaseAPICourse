@@ -177,6 +177,7 @@ else
         }
         
         await _db.DeleteTicketAsync(TicketId.Value);
+        OpenCloseConfirmation();
         _navManager.NavigateTo($"/projects/{ticket.ProjectId}/tickets");
     }
 }

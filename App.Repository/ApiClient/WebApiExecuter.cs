@@ -17,14 +17,20 @@ namespace MyApp.Repository.ApiClient
         //83.1 Получаем через конструктор класса необходимые параметры
         //          Нам нужен базовый адрес до конечной точки
         //          И функционал http клиента
-        public WebApiExecuter(string baseUrl, HttpClient httpClient)
+
+        // 121.1 Добавляем параметер с ключём string apiKey
+        public WebApiExecuter(string baseUrl, HttpClient httpClient, string apiKey)
         {
             _baseUrl = baseUrl;
             _httpClient = httpClient;
 
             // 83.2 Начинаем формировать заголовки для запроса
+
+            // 121.2 Добавляем ключ в заголовки запроса
+            httpClient.DefaultRequestHeaders.Clear();
             httpClient.DefaultRequestHeaders.Accept.Clear();
             httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+            httpClient.DefaultRequestHeaders.Add("ApiKey", apiKey);
         }
 
         // 83.3 Создаём универсальный метод для GET запросов

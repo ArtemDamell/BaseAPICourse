@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Diagnostics;
 using System.Linq;
+using WebAPIBasic.Filters;
 using WebAPIBasic.Filters.V2;
 using WebAPIBasic.QueryFilters;
 
@@ -18,6 +19,9 @@ namespace WebAPIBasic.Controllers.V2
     //[Route("api/v{v:apiVersion}/tickets")]
 
     // 66. При передачи версии API через строку запроса, просто добавляем к адресу параметр ?api-version=2.0
+
+    // 120.2 Добавить новый фильтр в контроллер
+    [APIKeyAuthFilter]
     public class TicketsV2Controller : ControllerBase
     {
         private readonly AppDbContext _db;

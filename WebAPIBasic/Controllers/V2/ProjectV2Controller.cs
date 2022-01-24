@@ -4,6 +4,7 @@ using Core.Models;
 using DataStore.EF;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using WebAPIBasic.Filters;
 using WebAPIBasic.QueryFilters;
 
 // 56. Переписатл все методы, чтобы избавиться от грязи в коде
@@ -13,6 +14,9 @@ namespace WebAPIBasic.Controllers.V2
     [ApiVersion("2.0")]
     [ApiController]
     [Route("api/projects")]
+
+    // 120.1 Добавить новый фильтр в контроллер
+    [APIKeyAuthFilter]
     public class ProjectV2Controller : ControllerBase
     {
 
