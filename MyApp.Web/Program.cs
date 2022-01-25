@@ -10,7 +10,9 @@ builder.RootComponents.Add<App>("#app");
 builder.RootComponents.Add<HeadOutlet>("head::after");
 
 // 122. В классе Program проекта WEB добавить параметер с ключём
-builder.Services.AddSingleton<IWebApiExecuter>(options => new WebApiExecuter("https://localhost:44336", new HttpClient(), ">bTH}A1IEC0aTx4Et?f^H>v4]Hmg[R311au[;HN)(!Z0aa-=UsHZEnF)~9yE|#u"));
+// 125. Добавить логику в класс Program проекта MyApp.Web, после HttpClient() добавить новый параметер
+// --> После этого вносим правки в WebExecuter
+builder.Services.AddSingleton<IWebApiExecuter>(options => new WebApiExecuter("https://localhost:44336", new HttpClient(), "blazorwasm", ">bTH}A1IEC0aTx4Et?f^H>v4]Hmg[R311au[;HN)(!Z0aa-=UsHZEnF)~9yE|#u"));
 
 // 94.1 На этот раз используем метод AddTransient, чтобы для каждого http запроса создавался свой экземпляр
 builder.Services.AddTransient<IProjectsScreen, ProjectsScreen>();

@@ -5,6 +5,7 @@ using System.Text;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using System.Net.Http.Json;
+using Core.StaticData;
 
 namespace MyApp.Repository.ApiClient
 {
@@ -19,7 +20,8 @@ namespace MyApp.Repository.ApiClient
         //          И функционал http клиента
 
         // 121.1 Добавляем параметер с ключём string apiKey
-        public WebApiExecuter(string baseUrl, HttpClient httpClient, string apiKey)
+        // 126.1 Вносим правки в WebExecuter, добавив параметер string clientId
+        public WebApiExecuter(string baseUrl, HttpClient httpClient, string clientId, string apiKey)
         {
             _baseUrl = baseUrl;
             _httpClient = httpClient;
@@ -30,7 +32,9 @@ namespace MyApp.Repository.ApiClient
             httpClient.DefaultRequestHeaders.Clear();
             httpClient.DefaultRequestHeaders.Accept.Clear();
             httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-            httpClient.DefaultRequestHeaders.Add("ApiKey", apiKey);
+            // 126.2 Добавляем новый заголовок в запрос
+            httpClient.DefaultRequestHeaders.Add(SD.ClientIdHeader, clientId);
+            httpClient.DefaultRequestHeaders.Add(SD.ApiKeyHeader, apiKey);
         }
 
         // 83.3 Создаём универсальный метод для GET запросов
