@@ -10,8 +10,14 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Versioning;
 using WebAPIBasic.Swagger;
+using WebAPIBasic.Auth;
 
 var builder = WebApplication.CreateBuilder(args);
+
+// 131. Добавить зависимости в класс Program WebAPI проекта (симулируем ситуацию, когда у нас есть только один клиент)
+builder.Services.AddSingleton<ICustomTokenManager, CustomTokenManager>();
+builder.Services.AddSingleton<ICustomUserManager, CustomUserManager>();
+
 
 /*Это место специально для конфигурации зависимостей*/
 
