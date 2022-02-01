@@ -13,7 +13,9 @@ namespace WebAPIBasic.Controllers
     [ApiController]
     [Route("api/[controller]")]
     // 120.2 Добавить новый фильтр в контроллер
-    [APIKeyAuthFilter]
+    //[APIKeyAuthFilter]
+    // 136. Заменить на всех контроллерах ApiKeyAuthFilter на CustomeTokenAuthFilterAttribute
+    [CustomeTokenAuthFilter]
     public class TicketsController : ControllerBase
     {
         private readonly AppDbContext _db;

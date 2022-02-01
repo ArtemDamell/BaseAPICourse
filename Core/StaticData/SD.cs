@@ -8,5 +8,6 @@ namespace Core.StaticData
     {
         public const string ApiKeyHeader = "ApiKey";
         public const string ClientIdHeader = "ClientId";
+        public const string TokenHeader = "TokenHeader";
     }
 }

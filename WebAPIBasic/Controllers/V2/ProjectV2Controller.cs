@@ -16,7 +16,9 @@ namespace WebAPIBasic.Controllers.V2
     [Route("api/projects")]
 
     // 120.1 Добавить новый фильтр в контроллер
-    [APIKeyAuthFilter]
+    //[APIKeyAuthFilter]
+    // 136. Заменить на всех контроллерах ApiKeyAuthFilter на CustomeTokenAuthFilterAttribute
+    [CustomeTokenAuthFilter]
     public class ProjectV2Controller : ControllerBase
     {
 

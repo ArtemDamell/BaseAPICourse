@@ -14,7 +14,8 @@ namespace WebAPIBasic.Controllers
     [ApiController]
     [Route("api/[controller]")]
     // 120.2 Добавить новый фильтр в контроллер
-    [APIKeyAuthFilter]
+    //[APIKeyAuthFilter]
+    [CustomeTokenAuthFilter]
     public class ProjectController : ControllerBase
     {
 

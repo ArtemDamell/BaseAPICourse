@@ -21,7 +21,9 @@ namespace WebAPIBasic.Controllers.V2
     // 66. При передачи версии API через строку запроса, просто добавляем к адресу параметр ?api-version=2.0
 
     // 120.2 Добавить новый фильтр в контроллер
-    [APIKeyAuthFilter]
+    //[APIKeyAuthFilter]
+    // 136. Заменить на всех контроллерах ApiKeyAuthFilter на CustomeTokenAuthFilterAttribute
+    [CustomeTokenAuthFilter]
     public class TicketsV2Controller : ControllerBase
     {
         private readonly AppDbContext _db;
