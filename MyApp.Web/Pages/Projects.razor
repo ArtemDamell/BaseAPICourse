@@ -1,6 +1,9 @@
 ﻿@*91.1 Создаём компонент UI пользователя для вывода проектов*@
-@page "/projects"
+@page "/"
 @inject IProjectsScreen _projects
+
+@*145.1 Переходим в компонент Projects*@
+@inject IAuthenticationScreen _authScreen
 
 <div class="row">
     <div class="col">
@@ -45,13 +48,22 @@ else
     </div>
 }
 
+@if (token is not null)
+{
+<span>Token: @token</span>
+}
+
 
 @code {
     // 91.2 Нам понадобится массив для хранения списка проектов
     IEnumerable<Project> projects;
+    string token;
 
     protected override async Task OnInitializedAsync()
     {
+        // 145.2 Переходим в компонент Projects
+        token = await _authScreen.LoginAsync("bob", "password");
+
         // 91.3 Получаем данные через класс ProjectScreen
         // Извлекаем интерфейс из этого класса
         projects = await _projects.ViewProjects();

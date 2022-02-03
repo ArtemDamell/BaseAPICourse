@@ -20,12 +20,22 @@ namespace WebAPIBasic.Controllers.Auth
         }
         // 132 ****************************************************
 
+        //[HttpPost]
+        //[Route("/authenticate")]
+        //// 127.1 Назначаем метод аутентификации
+        //public async Task<string> AuthenticateAsync(string username, string password)
+        //{
+        //    var result = await Task.FromResult(_customUserManager.Authenticate(username, password));
+        //    return result;
+        //}
+
+        // 146.2 Получить ошибку, перейти в контроллер AuthController и добавить дополнительную логику
         [HttpPost]
         [Route("/authenticate")]
         // 127.1 Назначаем метод аутентификации
-        public async Task<string> AuthenticateAsync(string username, string password)
+        public async Task<string> AuthenticateAsync(UserCredential userCredential)
         {
-            var result = await Task.FromResult(_customUserManager.Authenticate(username, password));
+            var result = await Task.FromResult(_customUserManager.Authenticate(userCredential.userName, userCredential.password));
             return result;
         }
 
@@ -46,5 +56,12 @@ namespace WebAPIBasic.Controllers.Auth
             var result = await Task.FromResult(_customTokenManager.GetUserInformationByToken(token));
             return result;
         }
+    }
+
+    // 146.1 Получить ошибку, перейти в контроллер AuthController и добавить дополнительную логику
+    public class UserCredential
+    {
+        public string userName { get; set; }
+        public string password { get; set; }
     }
 }
