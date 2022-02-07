@@ -62,7 +62,7 @@ else
     protected override async Task OnInitializedAsync()
     {
         // 145.2 Переходим в компонент Projects
-        token = await _authScreen.LoginAsync("bob", "password");
+        token = await _authScreen.LoginAsync("john", "password2");
 
         // 91.3 Получаем данные через класс ProjectScreen
         // Извлекаем интерфейс из этого класса

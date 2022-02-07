@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using MyApp.Business;
@@ -8,6 +9,11 @@ using MyApp.Web;
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
 builder.RootComponents.Add<App>("#app");
 builder.RootComponents.Add<HeadOutlet>("head::after");
+
+// 149. Перейти в Program и сконфигурировать CustomeTokenAuthenticationStateProvider
+builder.Services.AddOptions();
+builder.Services.AddAuthorizationCore();
+builder.Services.AddSingleton<AuthenticationStateProvider, CustomeTokenAuthenticationStateProvider>();
 
 // 144.1 Конфигурируем новый сервис и WebApiExecuter в классе Program проекта MyApp.WEB
 builder.Services.AddSingleton<ITokenRepository, TokenRepository>();

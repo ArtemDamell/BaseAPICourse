@@ -2,7 +2,11 @@
 @*96.1 Создаём компонент с маршрутом*@
 @page "/projects/{ProjectId:int}/tickets"
 
+
 @inject ITicketsScreen _db
+
+@*151. После этого в ProjectTickets добавить новый атрибут доступа только авторизованным пользователям*@
+@attribute [Authorize]
 
 <div class="row">
     <div class="col text-info"><h1>All tickets from project with ID: @ProjectId</h1></div>

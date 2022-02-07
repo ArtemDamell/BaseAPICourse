@@ -149,12 +149,13 @@ namespace MyApp.Repository.ApiClient
         }
 
         // 145.2 добавляем в каждый вызов конечной точки логику токенов
-        void AddTokenHeader()
+        async Task AddTokenHeader()
         {
-            if (_tokenRepository != null && !string.IsNullOrWhiteSpace(_tokenRepository.Token))
+            // 154.1 Исправляем ошибки после удаления свойства из интерфейса репозитория ITokenRepository
+            if (_tokenRepository != null && !string.IsNullOrWhiteSpace(/*_tokenRepository.Token*/await _tokenRepository.GetToken()))
             {
                 _httpClient.DefaultRequestHeaders.Remove(SD.TokenHeader);
-                _httpClient.DefaultRequestHeaders.Add(SD.TokenHeader, _tokenRepository.Token);
+                _httpClient.DefaultRequestHeaders.Add(SD.TokenHeader, /*_tokenRepository.Token*/ await _tokenRepository.GetToken());
             }
         }
     }
