@@ -1,0 +1,27 @@
+﻿@*160. Создать компонент для отслеживания статуса авторизации LoginStatus в PageComponents*@
+@inject IAuthenticationScreen _authScreen
+@inject NavigationManager _navManager
+
+@if (!string.IsNullOrWhiteSpace(userName))
+{
+    <span>Welcome, @userName</span>
+    <button type="button" class="btn btn-outline-danger mx-3" @onclick="LogoutHandler">Logout</button>
+}
+
+@code {
+    [CascadingParameter] public Task<AuthenticationState> AuthenticationState { get; set; }
+
+    string userName;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var state = await AuthenticationState;
+        userName = state.User.Identity.Name;
+    }
+
+    async Task LogoutHandler()
+    {
+        await _authScreen.Logout();
+        _navManager.NavigateTo("/", true);
+    }
+}

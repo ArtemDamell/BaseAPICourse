@@ -6,20 +6,30 @@ namespace MyApp.Business
     public class AuthenticationScreen : IAuthenticationScreen
     {
         private readonly IAuthenticationRepository _authenticationRepository;
-        public AuthenticationScreen(IAuthenticationRepository authenticationRepository)
+        private readonly ITokenRepository _tokenRepository;
+
+        public AuthenticationScreen(IAuthenticationRepository authenticationRepository, ITokenRepository tokenRepository)
         {
             _authenticationRepository = authenticationRepository;
+            _tokenRepository = tokenRepository;
         }
         public async Task<string> LoginAsync(string userName, string password)
         {
-            return await _authenticationRepository.LoginAsync(userName, password);
+            var token = await _authenticationRepository.LoginAsync(userName, password);
+            return token;
         }
 
-        public async Task<string> GetUserInfoAsync(string token)
+        public async Task<string?> GetUserInfoAsync(string? token)
         {
             return await _authenticationRepository.GetUserInfoAsync(token);
         }
 
         // После этого не забываем сделать Extract Interface
+
+        // 159.1 В AuthenticationScreen добавить метод выхода из аккаунта LogOut
+        public async Task Logout()
+        {
+            await _tokenRepository.SetToken(string.Empty);
+        }
     }
 }

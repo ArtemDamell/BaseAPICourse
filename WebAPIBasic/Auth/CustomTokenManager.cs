@@ -23,7 +23,7 @@
             return verifyed;
         }
 
-        public string GetUserInformationByToken(string token)
+        public string? GetUserInformationByToken(string? token)
         {
             var findedToken = _tokens.FirstOrDefault(x => token is not null && token.Contains(x.TokenString));
             if (findedToken is not null)

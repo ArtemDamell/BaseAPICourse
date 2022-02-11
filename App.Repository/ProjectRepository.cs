@@ -26,13 +26,13 @@ namespace MyApp.Repository
         // 84.2 Создаём метод получения всех проектов
         public async Task<IEnumerable<Project>> GetAsync()
         {
-            return await _webApiExecuter.InvokeGet<IEnumerable<Project>>("api/project");
+            return await _webApiExecuter.InvokeGet<IEnumerable<Project>>("api/projects?api-version=2.0");
         }
 
         // 84.3 Создаём метод получения проекта по ID
         public async Task<Project> GetByIdAsync(int id)
         {
-            return await _webApiExecuter.InvokeGet<Project>($"api/project/{id}");
+            return await _webApiExecuter.InvokeGet<Project>($"api/projects/{id}?api-version=2.0");
         }
 
         // 84.4 Создаём метод получения всех билетов в проекте по ID проекта
@@ -49,6 +49,8 @@ namespace MyApp.Repository
 
             if (!string.IsNullOrWhiteSpace(filter))
                 uri += $"?Owner={filter}&api-version=2.0";
+            else
+                uri += "?api-version=2.0";
 
             // *****************************
             return await _webApiExecuter.InvokeGet<IEnumerable<Ticket>>(uri);
@@ -57,20 +59,20 @@ namespace MyApp.Repository
  
         public async Task<int> CreateAsync(Project project)
         {
-            project = await _webApiExecuter.InvokePost("api/project", project);
+            project = await _webApiExecuter.InvokePost("api/projects?api-version=2.0", project);
             return project.Id;
         }
 
         // 84.6 Создаём метод обновления проекта
         public async Task UpdateAsync(Project project)
         {
-            await _webApiExecuter.InvokePut($"api/project/{project.Id}", project);
+            await _webApiExecuter.InvokePut($"api/projects/{project.Id}?api-version=2.0", project);
         }
 
         // 84.7 Создаём метод обновления проекта
         public async Task DeleteAsync(int id)
         {
-            await _webApiExecuter.InvokeDelete($"api/project/{id}");
+            await _webApiExecuter.InvokeDelete($"api/projects/{id}?api-version=2.0");
         }
     }
 }

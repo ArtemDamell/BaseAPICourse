@@ -1,0 +1,51 @@
+﻿@using Core.VMs
+
+@inject IAuthenticationScreen _authScreen
+@inject NavigationManager _navManager
+
+@*156. Создать Login компонент в PageComponents*@
+
+<AlertMessage @ref="alert" />
+
+@if (userVM is not null)
+{
+    <EditForm Model="userVM" OnValidSubmit="LoginHandler" class="form-check-inline">
+        <DataAnnotationsValidator />
+        <ValidationSummary />
+
+        <div class="form-group">
+            <label for="name">User Name</label>
+            <InputText id="name" @bind-Value="userVM.UserName" class="form-control" />
+        </div>
+        <div class="form-group">
+            <label for="password">Password</label>
+            <InputText id="password" @bind-Value="userVM.Password" class="form-control" type="password" />
+        </div>
+        <button type="submit" class="btn btn-primary">Login</button>
+    </EditForm>
+}
+
+@code {
+    UserVM userVM;
+    AlertMessage alert;
+
+    protected override void OnInitialized()
+    {
+        userVM = new();
+    }
+
+    async Task LoginHandler()
+    {
+        var token = await _authScreen.LoginAsync(userVM.UserName, userVM.Password);
+
+        if (string.IsNullOrWhiteSpace(token))
+        {
+            alert.ErrorMessage = "Login failed";
+            alert.Show();
+        }
+        else
+        {
+            _navManager.NavigateTo("/");
+        }
+    }
+}

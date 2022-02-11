@@ -9,6 +9,9 @@
 @inject ITicketsScreen _db
 @inject NavigationManager _navManager
 
+@*158.2 Добавить атрибут авторизации в компонент Projects*@
+@attribute [Authorize]
+
 <div class="row">
     <div class="col text-center">
         <h1 class="text-info">Ticket: @TicketId</h1>

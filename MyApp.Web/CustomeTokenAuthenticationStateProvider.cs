@@ -22,17 +22,21 @@ namespace MyApp.Web
             //var userName = string.Empty;
             //var userName = "john";
             // 155.2 Внести изменения в класс CustomeTokenAuthenticationStateProvider
-            var userName = await _authenticationRepository.GetUserInfoAsync(await _tokenRepository.GetToken());
+            string userName = await _authenticationRepository.GetUserInfoAsync(await _tokenRepository.GetToken());
             if (!string.IsNullOrWhiteSpace(userName))
             {
+                var claims = new List<Claim>();
                 var claim = new Claim(ClaimTypes.Name, userName);
+                claims.Add(claim);
+
                 var identity = new ClaimsIdentity(new[] { claim }, "Custome Token Auth");
                 var principal = new ClaimsPrincipal(identity);
 
-                //return Task.FromResult(new AuthenticationState(principal));
+                //return await Task.FromResult(new AuthenticationState(principal));
                 return new AuthenticationState(principal);
             }
             else
+                //return await Task.FromResult(new AuthenticationState(new ClaimsPrincipal(new ClaimsIdentity())));
                 return new AuthenticationState(new ClaimsPrincipal(new ClaimsIdentity()));
         }
     }

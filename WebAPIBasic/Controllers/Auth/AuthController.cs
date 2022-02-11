@@ -5,7 +5,6 @@ namespace WebAPIBasic.Controllers.Auth
 {
     // 127. Создать в проекте WebAPI в папке Controllers новую подпапку Auth, в ней контроллер AuthController
     [ApiController]
-    [Route("api/[controller]")]
     public class AuthController : ControllerBase
     {
         // 132. Внедряем зависимость в контроллер AuthController
@@ -49,9 +48,9 @@ namespace WebAPIBasic.Controllers.Auth
         }
 
         // 127.3
-        [HttpGet]
+        [HttpPost]
         [Route("/getuserinfo")]
-        public async Task<string> GetUserInfoByTokenAsync(string token)
+        public async Task<string?> GetUserInfoByTokenAsync(string? token)
         {
             var result = await Task.FromResult(_customTokenManager.GetUserInformationByToken(token));
             return result;

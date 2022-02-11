@@ -11,9 +11,9 @@ builder.RootComponents.Add<App>("#app");
 builder.RootComponents.Add<HeadOutlet>("head::after");
 
 // 149. Перейти в Program и сконфигурировать CustomeTokenAuthenticationStateProvider
+builder.Services.AddSingleton<AuthenticationStateProvider, CustomeTokenAuthenticationStateProvider>();
 builder.Services.AddOptions();
 builder.Services.AddAuthorizationCore();
-builder.Services.AddSingleton<AuthenticationStateProvider, CustomeTokenAuthenticationStateProvider>();
 
 // 144.1 Конфигурируем новый сервис и WebApiExecuter в классе Program проекта MyApp.WEB
 builder.Services.AddSingleton<ITokenRepository, TokenRepository>();

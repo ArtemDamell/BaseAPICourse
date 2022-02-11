@@ -6,7 +6,7 @@ namespace MyApp.Repository
     // 141. Для хранения токена нам потребуется новый репозиторий. Создать TokenRepository
     public class TokenRepository : ITokenRepository
     {
-        public string Token { get; set; }
+        //public string Token { get; set; }
 
         // 153.2 Для взаимодействие с браузером пользователя, внедряем зависимость JS
         private readonly IJSRuntime _js;
@@ -20,12 +20,10 @@ namespace MyApp.Repository
         {
             // sessionStorage.setItem - это JavaScript
             await _js.InvokeVoidAsync("sessionStorage.setItem", "token", token);
+            //Token = token;
         }
 
-        public async Task<string> GetToken()
-        {
-            return await _js.InvokeAsync<string>("sessionStorage.getItem", "token");
-        }
+        public async Task<string?> GetToken() => await _js.InvokeAsync<string?>("sessionStorage.getItem", "token");//return Token;
     }
     // Не забываем экстрактировать интерфейс. После, продолжаем реализовывать логику AuthenticationRepository, добавив в зависимости новый класс репозитория
 }

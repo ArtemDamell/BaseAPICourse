@@ -22,7 +22,9 @@
         {
             // 1. Validate user
             // 133.1
-            if (!_credentials[userName].Equals(password))
+            //if (!_credentials[userName].Equals(password))
+            //    return string.Empty;
+            if (!string.IsNullOrWhiteSpace(userName) && !_credentials[userName].Equals(password))
                 return string.Empty;
 
             // 2. Generate token
