@@ -18,7 +18,7 @@ namespace MyApp.Repository
             _tokenRepository = tokenRepository;
         }
 
-        public async Task<string> LoginAsync(string username, string password)
+        public async Task<string?> LoginAsync(string username, string password)
         {
             var token = await _webApiExecuter.InvokePostReturnString("authenticate", new { username = username, password = password });
             // 154.2 Исправляем ошибки после удаления свойства из интерфейса репозитория ITokenRepository

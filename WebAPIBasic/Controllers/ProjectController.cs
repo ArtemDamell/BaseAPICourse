@@ -116,7 +116,7 @@ namespace WebAPIBasic.Controllers
             }
             catch (Exception ex)
             {
-                throw ex;
+                throw new Exception(ex.Message);
             }
         }
     }

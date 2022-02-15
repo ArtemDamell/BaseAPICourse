@@ -32,7 +32,7 @@ namespace WebAPIBasic.Controllers.Auth
         [HttpPost]
         [Route("/authenticate")]
         // 127.1 Назначаем метод аутентификации
-        public async Task<string> AuthenticateAsync(UserCredential userCredential)
+        public async Task<string?> AuthenticateAsync(UserCredential userCredential)
         {
             var result = await Task.FromResult(_customUserManager.Authenticate(userCredential.userName, userCredential.password));
             return result;

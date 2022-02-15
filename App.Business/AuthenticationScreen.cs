@@ -13,7 +13,7 @@ namespace MyApp.Business
             _authenticationRepository = authenticationRepository;
             _tokenRepository = tokenRepository;
         }
-        public async Task<string> LoginAsync(string userName, string password)
+        public async Task<string?> LoginAsync(string userName, string password)
         {
             var token = await _authenticationRepository.LoginAsync(userName, password);
             return token;
@@ -27,9 +27,9 @@ namespace MyApp.Business
         // После этого не забываем сделать Extract Interface
 
         // 159.1 В AuthenticationScreen добавить метод выхода из аккаунта LogOut
-        public async Task Logout()
+        public Task Logout()
         {
-            await _tokenRepository.SetToken(string.Empty);
+            return _tokenRepository.SetToken(string.Empty);
         }
     }
 }

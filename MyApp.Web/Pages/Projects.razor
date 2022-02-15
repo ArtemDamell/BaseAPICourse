@@ -52,17 +52,17 @@ else
     </div>
 }
 
-@if (token is not null)
+@*@if (token is not null)
 {
     <span>Token: @token</span>
-}
+}*@
 
 @code {
     // 91.2 Нам понадобится массив для хранения списка проектов
     IEnumerable<Project> projects;
-    string token;
+    //string token;
 
-    protected override async Task OnParametersSetAsync()
+    protected override async Task OnInitializedAsync()
     {
         // 145.2 Переходим в компонент Projects
         //token = await _authScreen.LoginAsync("john", "password2");

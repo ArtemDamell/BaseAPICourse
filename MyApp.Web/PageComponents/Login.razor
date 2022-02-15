@@ -45,7 +45,8 @@
         }
         else
         {
-            _navManager.NavigateTo("/");
+            await _authScreen.GetUserInfoAsync(token);
+            _navManager.NavigateTo("/", true);
         }
     }
 }

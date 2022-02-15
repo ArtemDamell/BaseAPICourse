@@ -23,7 +23,10 @@ namespace MyApp.Repository
             //Token = token;
         }
 
-        public async Task<string?> GetToken() => await _js.InvokeAsync<string?>("sessionStorage.getItem", "token");//return Token;
+        public async Task<string?> GetToken()
+        {
+            return await _js.InvokeAsync<string?>("sessionStorage.getItem", "token");//return Token;
+        }
     }
     // Не забываем экстрактировать интерфейс. После, продолжаем реализовывать логику AuthenticationRepository, добавив в зависимости новый класс репозитория
 }

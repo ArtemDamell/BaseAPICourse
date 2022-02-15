@@ -11,9 +11,11 @@ builder.RootComponents.Add<App>("#app");
 builder.RootComponents.Add<HeadOutlet>("head::after");
 
 // 149. Перейти в Program и сконфигурировать CustomeTokenAuthenticationStateProvider
-builder.Services.AddSingleton<AuthenticationStateProvider, CustomeTokenAuthenticationStateProvider>();
 builder.Services.AddOptions();
 builder.Services.AddAuthorizationCore();
+//builder.Services.AddSingleton<AuthenticationStateProvider, CustomeTokenAuthenticationStateProvider>();
+builder.Services.AddSingleton<AuthenticationStateProvider, JwtTokenAuthenticationStateProvider>();
+
 
 // 144.1 Конфигурируем новый сервис и WebApiExecuter в классе Program проекта MyApp.WEB
 builder.Services.AddSingleton<ITokenRepository, TokenRepository>();
@@ -36,6 +38,6 @@ builder.Services.AddTransient<ITicketRepository, TicketRepository>();
 builder.Services.AddTransient<ITicketsScreen, TicketsScreen>();
 
 
-builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
+//builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
 
 await builder.Build().RunAsync();

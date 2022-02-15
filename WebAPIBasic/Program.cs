@@ -15,7 +15,9 @@ using WebAPIBasic.Auth;
 var builder = WebApplication.CreateBuilder(args);
 
 // 131. ƒобавить зависимости в класс Program WebAPI проекта (симулируем ситуацию, когда у нас есть только один клиент)
-builder.Services.AddSingleton<ICustomTokenManager, CustomTokenManager>();
+// 165. ¬ классе Program заменить зависимость builder.Services.AddSingleton<ICustomTokenManager, CustomTokenManager>();
+//builder.Services.AddSingleton<ICustomTokenManager, CustomTokenManager>();
+builder.Services.AddSingleton<ICustomTokenManager, JwtTokenManager>();
 builder.Services.AddSingleton<ICustomUserManager, CustomUserManager>();
 
 

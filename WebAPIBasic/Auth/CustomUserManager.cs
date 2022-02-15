@@ -18,7 +18,7 @@
             _customTokenManager = customTokenManager;
         }
 
-        public string Authenticate(string userName, string password)
+        public string? Authenticate(string userName, string password)
         {
             // 1. Validate user
             // 133.1

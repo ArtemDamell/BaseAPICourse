@@ -61,7 +61,8 @@ namespace MyApp.Repository.ApiClient
         public async Task<T> InvokeGet<T>(string uri)
         {
             // 145.3 добавляем в каждый вызов конечной точки логику токенов
-            await AddTokenHeader();
+            var token = await _tokenRepository.GetToken();
+            AddTokenHeader(token);
 
             return await _httpClient.GetFromJsonAsync<T>(GetUrl(uri));
         }
@@ -70,7 +71,8 @@ namespace MyApp.Repository.ApiClient
         public async Task<T> InvokePost<T>(string uri, T obj)
         {
             // 145.7 добавляем в каждый вызов конечной точки логику токенов
-            await AddTokenHeader();
+            var token = await _tokenRepository.GetToken();
+            AddTokenHeader(token);
 
             // Формируем ответ для клиента
             var response = await _httpClient.PostAsJsonAsync(GetUrl(uri), obj);
@@ -96,7 +98,8 @@ namespace MyApp.Repository.ApiClient
         public async Task<string?> InvokePostReturnString<T>(string url, T? obj)
         {
             // 145.6 добавляем в каждый вызов конечной точки логику токенов
-            await AddTokenHeader();
+            var token = await _tokenRepository.GetToken();
+            AddTokenHeader(token);
 
             var response = await _httpClient.PostAsJsonAsync(GetUrl(url), obj);
             await HandleError(response);
@@ -110,7 +113,8 @@ namespace MyApp.Repository.ApiClient
         public async Task InvokePut<T>(string uri, T obj)
         {
             // 145.5 добавляем в каждый вызов конечной точки логику токенов
-            await AddTokenHeader();
+            var token = await _tokenRepository.GetToken();
+            AddTokenHeader(token);
 
             // Формируем ответ для клиента
             var response = await _httpClient.PutAsJsonAsync(GetUrl(uri), obj);
@@ -124,7 +128,8 @@ namespace MyApp.Repository.ApiClient
         public async Task InvokeDelete(string uri)
         {
             // 145.4 добавляем в каждый вызов конечной точки логику токенов
-            await AddTokenHeader();
+            var token = await _tokenRepository.GetToken();
+            AddTokenHeader(token);
             // Формируем ответ для клиента
             var response = await _httpClient.DeleteAsync(GetUrl(uri));
             // Убеждаемся, что статус код ответа от конечной точки - 200 ОК
@@ -149,13 +154,13 @@ namespace MyApp.Repository.ApiClient
         }
 
         // 145.2 добавляем в каждый вызов конечной точки логику токенов
-        async Task AddTokenHeader()
+        void AddTokenHeader(string token)
         {
             // 154.1 Исправляем ошибки после удаления свойства из интерфейса репозитория ITokenRepository
-            if (_tokenRepository != null && !string.IsNullOrWhiteSpace(/*_tokenRepository.Token*/  await _tokenRepository.GetToken()))
+            if (_tokenRepository != null && !string.IsNullOrWhiteSpace(token))    /*_tokenRepository.Token*/
             {
                 _httpClient.DefaultRequestHeaders.Remove(SD.TokenHeader);
-                _httpClient.DefaultRequestHeaders.Add(SD.TokenHeader, /*_tokenRepository.Token*/ await _tokenRepository.GetToken());
+                _httpClient.DefaultRequestHeaders.Add(SD.TokenHeader, token);   /*_tokenRepository.Token*/
             }
         }
     }
