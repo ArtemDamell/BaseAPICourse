@@ -32,27 +32,27 @@ namespace WebAPIBasic.Controllers.Auth
         [HttpPost]
         [Route("/authenticate")]
         // 127.1 Назначаем метод аутентификации
-        public async Task<string?> AuthenticateAsync(UserCredential userCredential)
+        public Task<string?> AuthenticateAsync(UserCredential userCredential)
         {
-            var result = await Task.FromResult(_customUserManager.Authenticate(userCredential.userName, userCredential.password));
+            var result = Task.FromResult(_customUserManager.Authenticate(userCredential.userName, userCredential.password));
             return result;
         }
 
         // 127.2
         [HttpGet]
         [Route("/verifytoken")]
-        public async Task<bool> VerifyTokenAsync(string token)
+        public Task<bool> VerifyTokenAsync(Token token)
         {
-            var result = await Task.FromResult(_customTokenManager.VerifyToken(token));
+            var result = Task.FromResult(_customTokenManager.VerifyToken(token.token));
             return result;
         }
 
         // 127.3
         [HttpPost]
         [Route("/getuserinfo")]
-        public async Task<string?> GetUserInfoByTokenAsync(string? token)
+        public Task<string?> GetUserInfoByTokenAsync(Token token)
         {
-            var result = await Task.FromResult(_customTokenManager.GetUserInformationByToken(token));
+            var result = Task.FromResult(_customTokenManager.GetUserInformationByToken(token.token));
             return result;
         }
     }
@@ -62,5 +62,10 @@ namespace WebAPIBasic.Controllers.Auth
     {
         public string userName { get; set; }
         public string password { get; set; }
+    }
+
+    public class Token
+    {
+        public string? token { get; set; }
     }
 }

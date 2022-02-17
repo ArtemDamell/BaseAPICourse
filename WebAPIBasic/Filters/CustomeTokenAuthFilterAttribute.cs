@@ -8,8 +8,6 @@ namespace WebAPIBasic.Filters
     // 135. Создать в папке Filters проекта WebAPI новый FilterAttribute (класс) CustomeTokenAuthFilterAttribute
     public class CustomeTokenAuthFilterAttribute: Attribute, IAuthorizationFilter
     {
-        private readonly ICustomTokenManager _customTokenManager;
-
         public void OnAuthorization(AuthorizationFilterContext context)
         {
             if (!context.HttpContext.Request.Headers.TryGetValue(SD.TokenHeader, out var token))
