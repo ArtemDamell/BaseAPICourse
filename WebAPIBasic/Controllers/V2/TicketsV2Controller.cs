@@ -1,5 +1,6 @@
 ﻿using Core.Models;
 using DataStore.EF;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Diagnostics;
@@ -23,7 +24,10 @@ namespace WebAPIBasic.Controllers.V2
     // 120.2 Добавить новый фильтр в контроллер
     //[APIKeyAuthFilter]
     // 136. Заменить на всех контроллерах ApiKeyAuthFilter на CustomeTokenAuthFilterAttribute
-    [CustomeTokenAuthFilter]
+    //[CustomeTokenAuthFilter]
+
+    // 177.1 Т.К. у нас уже другой сервер, отвечающий за проверку токенов, в контроллерах меняем наш фильтр ([CustomeTokenAuthFilter]) на простой [Authorize]
+    [Authorize]
     public class TicketsV2Controller : ControllerBase
     {
         private readonly AppDbContext _db;

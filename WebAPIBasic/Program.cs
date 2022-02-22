@@ -27,6 +27,19 @@ builder.Services.AddSingleton<ICustomUserManager, CustomUserManager>();
 builder.Services.AddControllers();
 // ---------------------------------------------------
 
+// // 176.2 Конфигурируем Аутентификацию для API сервера
+builder.Services.AddAuthentication("Bearer")
+                       .AddJwtBearer("Bearer", options =>
+                       {
+                           // Указываем адрес IdentityServer'а из файла launchsettings.json
+                           options.Authority = "https://localhost:5001";
+                           options.TokenValidationParameters = new Microsoft.IdentityModel.Tokens.TokenValidationParameters
+                           {
+                               ValidateAudience = false
+                           };
+                       });
+
+
 // 29. Добавляем опции к нашим контроллерам и через них устанавливаем глобальный фильтр
 //builder.Services.AddControllers(options =>
 //{
@@ -104,6 +117,10 @@ if (app.Environment.IsDevelopment())
 
 // 93.2 Подключаем Middleware политики
 app.UseCors();
+
+// 176.1 Добавить middleware в класс Program проекта WebAPI
+app.UseAuthentication();
+app.UseAuthorization();
 
 // Тут у нас находится маршрут по умолчанию
 /*

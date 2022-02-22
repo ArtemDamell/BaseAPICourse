@@ -2,6 +2,7 @@
 using Core.DTO;
 using Core.Models;
 using DataStore.EF;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using WebAPIBasic.Filters;
@@ -15,7 +16,10 @@ namespace WebAPIBasic.Controllers
     [Route("api/[controller]")]
     // 120.2 Добавить новый фильтр в контроллер
     //[APIKeyAuthFilter]
-    [CustomeTokenAuthFilter]
+    //[CustomeTokenAuthFilter]
+
+    // 177.1 Т.К. у нас уже другой сервер, отвечающий за проверку токенов, в контроллерах меняем наш фильтр ([CustomeTokenAuthFilter]) на простой [Authorize]
+    [Authorize]
     public class ProjectController : ControllerBase
     {
 
