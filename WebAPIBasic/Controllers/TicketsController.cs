@@ -19,7 +19,7 @@ namespace WebAPIBasic.Controllers
     //[CustomeTokenAuthFilter]
 
     // 177.1 Т.К. у нас уже другой сервер, отвечающий за проверку токенов, в контроллерах меняем наш фильтр ([CustomeTokenAuthFilter]) на простой [Authorize]
-    [Authorize]
+    [Authorize(policy: "write")]
     public class TicketsController : ControllerBase
     {
         private readonly AppDbContext _db;

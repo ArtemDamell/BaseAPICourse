@@ -39,30 +39,42 @@ namespace MyApp.Repository.ApiClient
         //}
 
         // 142.1 Изменить класс WebApiExecuter, старый метод - выше закомментирован
-        public WebApiExecuter(string baseUrl, HttpClient httpClient, ITokenRepository tokenRepository)
+        //public WebApiExecuter(string baseUrl, HttpClient httpClient, ITokenRepository tokenRepository)
+        //{
+        //    _baseUrl = baseUrl;
+        //    _httpClient = httpClient;
+        //    _tokenRepository = tokenRepository;
+
+        //    // 83.2 Начинаем формировать заголовки для запроса
+
+        //    // 121.2 Добавляем ключ в заголовки запроса
+        //    httpClient.DefaultRequestHeaders.Clear();
+        //    httpClient.DefaultRequestHeaders.Accept.Clear();
+        //    httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+
+        //    // Теперь мы не можем единажды инициализировать токен в конструкторе, т.к. он не будет менятся и присваивается ТОЛЬКО после логина
+        //    // А этот класс инициализируется единажды после первого запроса и не сможет больше получать или менять токен
+        //    // Поэтому, добавляем в каждый вызов конечной точки логику токенов
+        //}
+
+        // 199. Так, как в заголовке запроса отсутствует токен, его надо добавить! Изменяем первым делом в MyApp.Repository класс WebApiExecuter
+        public WebApiExecuter(HttpClient httpClient)
         {
-            _baseUrl = baseUrl;
+            _baseUrl = httpClient.BaseAddress.AbsoluteUri;
             _httpClient = httpClient;
-            _tokenRepository = tokenRepository;
 
-            // 83.2 Начинаем формировать заголовки для запроса
-
-            // 121.2 Добавляем ключ в заголовки запроса
             httpClient.DefaultRequestHeaders.Clear();
             httpClient.DefaultRequestHeaders.Accept.Clear();
             httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-
-            // Теперь мы не можем единажды инициализировать токен в конструкторе, т.к. он не будет менятся и присваивается ТОЛЬКО после логина
-            // А этот класс инициализируется единажды после первого запроса и не сможет больше получать или менять токен
-            // Поэтому, добавляем в каждый вызов конечной точки логику токенов
         }
 
         // 83.3 Создаём универсальный метод для GET запросов
         public async Task<T> InvokeGet<T>(string uri)
         {
             // 145.3 добавляем в каждый вызов конечной точки логику токенов
-            var token = await _tokenRepository.GetToken();
-            AddTokenHeader(token);
+            //var token = await _tokenRepository.GetToken();
+            // 200.1 В том же файле закомментировать методы AddTokenHeader(token)
+            //AddTokenHeader(token);
 
             return await _httpClient.GetFromJsonAsync<T>(GetUrl(uri));
         }
@@ -72,7 +84,8 @@ namespace MyApp.Repository.ApiClient
         {
             // 145.7 добавляем в каждый вызов конечной точки логику токенов
             var token = await _tokenRepository.GetToken();
-            AddTokenHeader(token);
+            // 200.2 В том же файле закомментировать методы AddTokenHeader(token)
+            //AddTokenHeader(token);
 
             // Формируем ответ для клиента
             var response = await _httpClient.PostAsJsonAsync(GetUrl(uri), obj);
@@ -99,7 +112,8 @@ namespace MyApp.Repository.ApiClient
         {
             // 145.6 добавляем в каждый вызов конечной точки логику токенов
             var token = await _tokenRepository.GetToken();
-            AddTokenHeader(token);
+            // 200.3 В том же файле закомментировать методы AddTokenHeader(token)
+            //AddTokenHeader(token);
 
             var response = await _httpClient.PostAsJsonAsync(GetUrl(url), obj);
             await HandleError(response);
@@ -114,7 +128,8 @@ namespace MyApp.Repository.ApiClient
         {
             // 145.5 добавляем в каждый вызов конечной точки логику токенов
             var token = await _tokenRepository.GetToken();
-            AddTokenHeader(token);
+            // 200.4 В том же файле закомментировать методы AddTokenHeader(token)
+            //AddTokenHeader(token);
 
             // Формируем ответ для клиента
             var response = await _httpClient.PutAsJsonAsync(GetUrl(uri), obj);
@@ -129,7 +144,8 @@ namespace MyApp.Repository.ApiClient
         {
             // 145.4 добавляем в каждый вызов конечной точки логику токенов
             var token = await _tokenRepository.GetToken();
-            AddTokenHeader(token);
+            // 200.5/5 В том же файле закомментировать методы AddTokenHeader(token)
+            //AddTokenHeader(token);
             // Формируем ответ для клиента
             var response = await _httpClient.DeleteAsync(GetUrl(uri));
             // Убеждаемся, что статус код ответа от конечной точки - 200 ОК
@@ -139,9 +155,18 @@ namespace MyApp.Repository.ApiClient
         }
 
         // 83.4
+        //private string GetUrl(string uri)
+        //{
+        //    return $"{_baseUrl}/{uri}";
+        //}
+
+        // 201. В том же файле изменить метод GetUrl()
         private string GetUrl(string uri)
         {
-            return $"{_baseUrl}/{uri}";
+            if (_baseUrl.EndsWith("/"))
+                return $"{_baseUrl}{uri}";
+            else
+                return $"{_baseUrl}/{uri}";
         }
 
         private static async Task HandleError(HttpResponseMessage response)

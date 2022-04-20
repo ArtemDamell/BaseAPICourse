@@ -1,0 +1,9 @@
+﻿@*190.2 Скопировать из демо проекта компонент RedirectToLogin, Authentication в MyApp.WEB*@
+
+@page "/authentication/{action}"
+@using Microsoft.AspNetCore.Components.WebAssembly.Authentication
+<RemoteAuthenticatorView Action="@Action" />
+
+@code{
+    [Parameter] public string? Action { get; set; }
+}

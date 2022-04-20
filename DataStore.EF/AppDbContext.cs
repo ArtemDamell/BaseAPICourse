@@ -29,7 +29,7 @@ namespace DataStore.EF
 
             // 48.6 Инициализируем модели начальными данными
             modelBuilder.Entity<Project>().HasData(
-                    new Project { Id = 1, Name = "Project 1"},
+                    new Project { Id = 1, Name = "Project 1" },
                             new Project { Id = 2, Name = "Project 2" }
                 );
 
@@ -41,7 +41,7 @@ namespace DataStore.EF
 
             // 69.2 / 69.2 Имплементируем начальные данные в базу
             modelBuilder.Entity<EventAdministrator>().HasData(
-                    new EventAdministrator { Id = 1, FirstName="Admin 1", LastName="Adminov 1", Age=34, Phone="0409612987", Address="Somestreet 1", ProjectId = 1 },
+                    new EventAdministrator { Id = 1, FirstName = "Admin 1", LastName = "Adminov 1", Age = 34, Phone = "0409612987", Address = "Somestreet 1", ProjectId = 1 },
                             new EventAdministrator { Id = 2, FirstName = "Admin 2", LastName = "Adminov 2", Age = 23, Phone = "0419397987", Address = "Somestreet 2", ProjectId = 1 },
                             new EventAdministrator { Id = 3, FirstName = "Admin 3", LastName = "Adminov 3", Age = 40, Phone = "0459697145", Address = "Somestreet 3", ProjectId = 2 }
                 );

@@ -22,7 +22,7 @@ namespace WebAPIBasic.Controllers.V2
     //[CustomeTokenAuthFilter]
 
     // 177.1 Т.К. у нас уже другой сервер, отвечающий за проверку токенов, в контроллерах меняем наш фильтр ([CustomeTokenAuthFilter]) на простой [Authorize]
-    [Authorize]
+    [Authorize(policy: "WebApiScope")]
     public class ProjectV2Controller : ControllerBase
     {
 

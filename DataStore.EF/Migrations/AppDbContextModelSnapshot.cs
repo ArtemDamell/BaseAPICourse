@@ -17,7 +17,7 @@ namespace DataStore.EF.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "6.0.1")
+                .HasAnnotation("ProductVersion", "6.0.4")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder, 1L, 1);
@@ -60,38 +60,6 @@ namespace DataStore.EF.Migrations
                     b.HasIndex("ProjectId");
 
                     b.ToTable("EventAdministrators");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            Address = "Somestreet 1",
-                            Age = 34,
-                            FirstName = "Admin 1",
-                            LastName = "Adminov 1",
-                            Phone = "0409612987",
-                            ProjectId = 1
-                        },
-                        new
-                        {
-                            Id = 2,
-                            Address = "Somestreet 2",
-                            Age = 23,
-                            FirstName = "Admin 2",
-                            LastName = "Adminov 2",
-                            Phone = "0419397987",
-                            ProjectId = 1
-                        },
-                        new
-                        {
-                            Id = 3,
-                            Address = "Somestreet 3",
-                            Age = 40,
-                            FirstName = "Admin 3",
-                            LastName = "Adminov 3",
-                            Phone = "0459697145",
-                            ProjectId = 2
-                        });
                 });
 
             modelBuilder.Entity("Core.Models.Project", b =>
@@ -102,6 +70,11 @@ namespace DataStore.EF.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
+                    b.Property<string>("ClientName")
+                        .IsRequired()
+                        .HasMaxLength(250)
+                        .HasColumnType("nvarchar(250)");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(50)
@@ -110,18 +83,6 @@ namespace DataStore.EF.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Projects");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            Name = "Project 1"
-                        },
-                        new
-                        {
-                            Id = 2,
-                            Name = "Project 2"
-                        });
                 });
 
             modelBuilder.Entity("Core.Models.Ticket", b =>
@@ -160,29 +121,6 @@ namespace DataStore.EF.Migrations
                     b.HasIndex("ProjectId");
 
                     b.ToTable("Tickets");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            Description = "Ticket for Project 1",
-                            ProjectId = 1,
-                            Title = "Ticket 1"
-                        },
-                        new
-                        {
-                            Id = 2,
-                            Description = "Ticket for Project 1",
-                            ProjectId = 1,
-                            Title = "Ticket 2"
-                        },
-                        new
-                        {
-                            Id = 3,
-                            Description = "Ticket for Project 2",
-                            ProjectId = 2,
-                            Title = "Ticket 3"
-                        });
                 });
 
             modelBuilder.Entity("Core.Models.EventAdministrator", b =>

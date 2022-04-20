@@ -8,8 +8,6 @@
 using DataStore.EF;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Versioning;
-using WebAPIBasic.Swagger;
 using WebAPIBasic.Auth;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -38,7 +36,22 @@ builder.Services.AddAuthentication("Bearer")
                                ValidateAudience = false
                            };
                        });
+// 183. Ќа данном этапе наш API сервер принимает абсолютно все token'ы, исправим это. ѕерейти в класс Program проекта WebAPI и добавить сервис авторизации дл€ проверки валидности и подлинности ключа.
+builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy("WebApiScope", policy =>
+    {
+        policy.RequireAuthenticatedUser();
+        policy.RequireClaim("scope", "webapi");
+    });
 
+    options.AddPolicy("WebApiWriteScope", policy =>
+    {
+        policy.RequireAuthenticatedUser();
+        policy.RequireClaim("scope", "write");
+    });
+});
+// 184. --> ѕосле этого применить эту политику в контроллере Project
 
 // 29. ƒобавл€ем опции к нашим контроллерам и через них устанавливаем глобальный фильтр
 //builder.Services.AddControllers(options =>
