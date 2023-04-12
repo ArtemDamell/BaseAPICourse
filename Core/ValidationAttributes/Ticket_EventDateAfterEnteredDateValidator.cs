@@ -5,7 +5,10 @@ namespace Core.ValidationAttributes
 {
     public class Ticket_EventDateAfterEnteredDateValidator : ValidationAttribute
     {
-        // 40.1
+        /// <summary>
+        /// Validates that the Event Date of a Ticket is after the Entered Date.
+        /// </summary>
+        /// <returns>ValidationResult.Success if the Event Date is after the Entered Date, otherwise a ValidationResult with an error message.</returns>
         protected override ValidationResult? IsValid(object? value, ValidationContext validationContext)
         {
             var ticket = validationContext.ObjectInstance as Ticket;

@@ -23,7 +23,6 @@ namespace IdentityServer
         public void ConfigureServices(IServiceCollection services)
         {
             // uncomment, if you want to add an MVC-based UI
-            // 197.2 Раскомментировать!
             services.AddControllersWithViews();
 
             var builder = services.AddIdentityServer(options =>
@@ -34,7 +33,6 @@ namespace IdentityServer
                 .AddInMemoryIdentityResources(Config.IdentityResources)
                 .AddInMemoryApiScopes(Config.ApiScopes)
                 .AddInMemoryClients(Config.Clients)
-                // 197.1 В класс StartUp проекта IdentityServer добавить тестового пользователя
                 .AddTestUsers(TestUsers.Users);
 
             // not recommended for production - you need to store your key material somewhere secure
@@ -49,14 +47,12 @@ namespace IdentityServer
             }
 
             // uncomment if you want to add MVC
-            // 197.3 Раскомментировать!
             app.UseStaticFiles();
             app.UseRouting();
 
             app.UseIdentityServer();
 
             // uncomment, if you want to add MVC
-            // 197.4 Раскомментировать!
             app.UseAuthorization();
             app.UseEndpoints(endpoints =>
             {

@@ -1,11 +1,8 @@
-﻿@*150. Реализовать передачу AuthenticationStateProvider в приложение, путём добавления Каскадного параметра в App.razor*@
-<CascadingAuthenticationState>
+﻿<CascadingAuthenticationState>
     <Router AppAssembly="@typeof(App).Assembly" PreferExactMatches="@true">
         <Found Context="routeData">
             <AuthorizeRouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)" >
                 <NotAuthorized>
-                    @*<Login />*@
-                    @*191. Скопировать из App из блока NotAuthorize в App WEB проекта*@
                     @if (context.User.Identity?.IsAuthenticated != true)
                     {
                         <RedirectToLogin />
@@ -16,7 +13,6 @@
                     }
                 </NotAuthorized>
             </AuthorizeRouteView>
-            @*<FocusOnNavigate RouteData="@routeData" Selector="h1" />*@
         </Found>
         <NotFound>
             <PageTitle>Not found</PageTitle>

@@ -1,14 +1,14 @@
 ﻿using Core.Models;
-using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Text;
 
 namespace Core.ValidationAttributes
 {
-    // 38
     internal class Ticket_FutureDateOnCreationValidator : ValidationAttribute
     {
+        /// <summary>
+        /// Validates the future event date of a ticket.
+        /// </summary>
+        /// <returns>ValidationResult.Success if the event date is in the future, otherwise a ValidationResult with an error message.</returns>
         protected override ValidationResult? IsValid(object? value, ValidationContext validationContext)
         {
             var ticket = validationContext.ObjectInstance as Ticket;

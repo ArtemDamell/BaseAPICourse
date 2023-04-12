@@ -1,15 +1,10 @@
-﻿@*107. Добавляем новый компонент*@
-@*Далее переходим в DisplayTicket и делаем кнопку отображение/редактирование билета*@
+﻿@page "/tickets/{ticketId:int}"
 
-@page "/tickets/{ticketId:int}"
-
-@*112.1 Добавить новый маршрут к ViewEditTicket*@
 @page "/projects/{projectId:int}/addticket"
 
 @inject ITicketsScreen _db
 @inject NavigationManager _navManager
 
-@*158.2 Добавить атрибут авторизации в компонент Projects*@
 @attribute [Authorize]
 
 <div class="row">
@@ -82,8 +77,6 @@ else
 
 
 @code {
-
-    // 112.2 Изменить тип на nullable, это будет нашим флагом, мы создаём или редактируем билет
     [Parameter] public int? TicketId { get; set; }
     [Parameter] public int? ProjectId { get; set; }
 
@@ -92,14 +85,11 @@ else
     bool isValid = true;
     bool showConfirmation;
 
-    // 112.5
     string cssClass = "btn-outline-primary";
     string buttonNameVar = "Update";
 
-    // Мы используем метод OnParametersSet т.к. мы должны быть уверены, что в переменной TicketId уже точно есть значение
     protected override async Task OnParametersSetAsync()
     {
-        // 112.3 Добавляем проверку
         if (TicketId.HasValue)
         {
             ticket = await _db.ViewTicketByIdAsync(TicketId.Value);
@@ -122,12 +112,6 @@ else
             alert.Show();
             isValid = false;
         }
-        //if (!ticket.ValidateFutureEventDate())
-        //{
-        //    alert.ErrorMessage = "Event date must be future";
-        //    alert.Show();
-        //    isValid = false;
-        //}
         if (!ticket.ValidateEventDatePresence())
         {
             alert.ErrorMessage = "Event date is REQUIRED";
@@ -140,20 +124,9 @@ else
             alert.Show();
             isValid = false;
         }
-        //if (!ticket.ValidateEventDateAfterEnteredDate())
-        //{
-        //    alert.ErrorMessage = "Entered date must be later that Event date";
-        //    alert.Show();
-        //    isValid = false;
-        //}
 
         if (isValid)
         {
-            // 112.4 Изменяем логику для проверки **************************
-            //await _db.UpdateTicketAsync(ticket);
-            //_navManager.NavigateTo($"/projects/{ticket.ProjectId}/tickets");
-            // *****************************************************************
-
             if (TicketId.HasValue)
                 await _db.UpdateTicketAsync(ticket);
             else

@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Net.Http;
-using System.Text;
+﻿using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using System.Net.Http.Json;
@@ -9,55 +6,12 @@ using Core.StaticData;
 
 namespace MyApp.Repository.ApiClient
 {
-    // 83. Создаём класс прослойки для конечных точек и приложением
     public class WebApiExecuter : IWebApiExecuter
     {
         private readonly string _baseUrl;
         private readonly HttpClient _httpClient;
         private readonly ITokenRepository _tokenRepository;
 
-        //83.1 Получаем через конструктор класса необходимые параметры
-        //          Нам нужен базовый адрес до конечной точки
-        //          И функционал http клиента
-
-        // 121.1 Добавляем параметер с ключём string apiKey
-        // 126.1 Вносим правки в WebExecuter, добавив параметер string clientId
-        //public WebApiExecuter(string baseUrl, HttpClient httpClient, string clientId, string apiKey)
-        //{
-        //    _baseUrl = baseUrl;
-        //    _httpClient = httpClient;
-
-        //    // 83.2 Начинаем формировать заголовки для запроса
-
-        //    // 121.2 Добавляем ключ в заголовки запроса
-        //    httpClient.DefaultRequestHeaders.Clear();
-        //    httpClient.DefaultRequestHeaders.Accept.Clear();
-        //    httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-        //    // 126.2 Добавляем новый заголовок в запрос
-        //    httpClient.DefaultRequestHeaders.Add(SD.ClientIdHeader, clientId);
-        //    httpClient.DefaultRequestHeaders.Add(SD.ApiKeyHeader, apiKey);
-        //}
-
-        // 142.1 Изменить класс WebApiExecuter, старый метод - выше закомментирован
-        //public WebApiExecuter(string baseUrl, HttpClient httpClient, ITokenRepository tokenRepository)
-        //{
-        //    _baseUrl = baseUrl;
-        //    _httpClient = httpClient;
-        //    _tokenRepository = tokenRepository;
-
-        //    // 83.2 Начинаем формировать заголовки для запроса
-
-        //    // 121.2 Добавляем ключ в заголовки запроса
-        //    httpClient.DefaultRequestHeaders.Clear();
-        //    httpClient.DefaultRequestHeaders.Accept.Clear();
-        //    httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-
-        //    // Теперь мы не можем единажды инициализировать токен в конструкторе, т.к. он не будет менятся и присваивается ТОЛЬКО после логина
-        //    // А этот класс инициализируется единажды после первого запроса и не сможет больше получать или менять токен
-        //    // Поэтому, добавляем в каждый вызов конечной точки логику токенов
-        //}
-
-        // 199. Так, как в заголовке запроса отсутствует токен, его надо добавить! Изменяем первым делом в MyApp.Repository класс WebApiExecuter
         public WebApiExecuter(HttpClient httpClient)
         {
             _baseUrl = httpClient.BaseAddress.AbsoluteUri;
@@ -68,99 +22,81 @@ namespace MyApp.Repository.ApiClient
             httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
         }
 
-        // 83.3 Создаём универсальный метод для GET запросов
-        public async Task<T> InvokeGet<T>(string uri)
-        {
-            // 145.3 добавляем в каждый вызов конечной точки логику токенов
-            //var token = await _tokenRepository.GetToken();
-            // 200.1 В том же файле закомментировать методы AddTokenHeader(token)
-            //AddTokenHeader(token);
+        /// <summary>
+        /// Invokes a GET request to the specified URI and returns the response as a generic type.
+        /// </summary>
+        /// <typeparam name="T">The type of the response.</typeparam>
+        /// <param name="uri">The URI of the request.</param>
+        /// <returns>The response of the request as a generic type.</returns>
+        public Task<T> InvokeGet<T>(string uri) => _httpClient.GetFromJsonAsync<T>(GetUrl(uri));
 
-            return await _httpClient.GetFromJsonAsync<T>(GetUrl(uri));
-        }
-
-        // 83.5 Создаём универсальный метод для POST запросов
+        /// <summary>
+        /// Invokes a POST request to the specified URI with the given object as the body.
+        /// </summary>
+        /// <typeparam name="T">The type of the object to be sent in the body of the request.</typeparam>
+        /// <param name="uri">The URI of the endpoint to send the request to.</param>
+        /// <param name="obj">The object to be sent in the body of the request.</param>
+        /// <returns>The response from the endpoint.</returns>
         public async Task<T> InvokePost<T>(string uri, T obj)
         {
-            // 145.7 добавляем в каждый вызов конечной точки логику токенов
             var token = await _tokenRepository.GetToken();
-            // 200.2 В том же файле закомментировать методы AddTokenHeader(token)
-            //AddTokenHeader(token);
 
-            // Формируем ответ для клиента
             var response = await _httpClient.PostAsJsonAsync(GetUrl(uri), obj);
-            // Убеждаемся, что статус код ответа от конечной точки - 200 ОК
-            // 86.1 Комментируем оригинальную реализацию и добавляем ошибку
-            //response.EnsureSuccessStatusCode();
 
-            // 86.2 Это реализация метода обработки ошибки, извлечём из него метод
-            //      Так, как мы будем использовать эту логику в нескольких методах
-            //      Для этого нажимаем ПКМ -> Extract method
-            //if (!response.IsSuccessStatusCode)
-            //{
-            //    var error = await response.Content.ReadAsStringAsync();
-            //    throw new HttpRequestException(error);
-            //}
             await HandleError(response);
-
-            // Возвращаем ответ клиенту
             return await response.Content.ReadFromJsonAsync<T>();
         }
 
-        // 140.1 Создать новый метод InvokePostReturnString
+        /// <summary>
+        /// Invokes a POST request to the specified URL and returns the response as a string.
+        /// </summary>
+        /// <typeparam name="T">The type of the object to be sent in the request.</typeparam>
+        /// <param name="url">The URL to send the request to.</param>
+        /// <param name="obj">The object to be sent in the request.</param>
+        /// <returns>The response from the request as a string.</returns>
         public async Task<string?> InvokePostReturnString<T>(string url, T? obj)
         {
-            // 145.6 добавляем в каждый вызов конечной точки логику токенов
             var token = await _tokenRepository.GetToken();
-            // 200.3 В том же файле закомментировать методы AddTokenHeader(token)
-            //AddTokenHeader(token);
 
             var response = await _httpClient.PostAsJsonAsync(GetUrl(url), obj);
             await HandleError(response);
 
             return await response.Content.ReadAsStringAsync();
-
-            // <-- 140.2 Возвращаемся в репозиторий
         }
 
-        // 83.6 Создаём универсальный метод для PUT запросов
+        /// <summary>
+        /// Invokes a PUT request to the specified URI with the given object as the body.
+        /// </summary>
+        /// <typeparam name="T">The type of the object to be sent in the body.</typeparam>
+        /// <param name="uri">The URI to send the request to.</param>
+        /// <param name="obj">The object to be sent in the body.</param>
+        /// <returns>A Task representing the asynchronous operation.</returns>
         public async Task InvokePut<T>(string uri, T obj)
         {
-            // 145.5 добавляем в каждый вызов конечной точки логику токенов
             var token = await _tokenRepository.GetToken();
-            // 200.4 В том же файле закомментировать методы AddTokenHeader(token)
-            //AddTokenHeader(token);
 
-            // Формируем ответ для клиента
             var response = await _httpClient.PutAsJsonAsync(GetUrl(uri), obj);
-            // Убеждаемся, что статус код ответа от конечной точки - 200 ОК
-            // 86.3
-            //response.EnsureSuccessStatusCode();
             await HandleError(response);
         }
 
-        // 83.7 Создаём универсальный метод для DELETE запросов
+        /// <summary>
+        /// Invokes a DELETE request to the specified URI.
+        /// </summary>
+        /// <param name="uri">The URI of the request.</param>
+        /// <returns>The response from the DELETE request.</returns>
         public async Task InvokeDelete(string uri)
         {
-            // 145.4 добавляем в каждый вызов конечной точки логику токенов
             var token = await _tokenRepository.GetToken();
-            // 200.5/5 В том же файле закомментировать методы AddTokenHeader(token)
-            //AddTokenHeader(token);
-            // Формируем ответ для клиента
+
             var response = await _httpClient.DeleteAsync(GetUrl(uri));
-            // Убеждаемся, что статус код ответа от конечной точки - 200 ОК
-            // 86.4
-            //response.EnsureSuccessStatusCode();
             await HandleError(response);
         }
 
-        // 83.4
-        //private string GetUrl(string uri)
-        //{
-        //    return $"{_baseUrl}/{uri}";
-        //}
-
-        // 201. В том же файле изменить метод GetUrl()
+        /// <summary>
+        /// Gets the URL for the given URI.
+        /// </summary>
+        /// <param name="uri">The URI.</param>
+        /// <returns>The URL.</returns>
         private string GetUrl(string uri)
         {
             if (_baseUrl.EndsWith("/"))
@@ -169,23 +105,18 @@ namespace MyApp.Repository.ApiClient
                 return $"{_baseUrl}/{uri}";
         }
 
+        /// <summary>
+        /// Handles an error response from an HTTP request.
+        /// </summary>
+        /// <returns>
+        /// Throws an HttpRequestException if the response is not successful.
+        /// </returns>
         private static async Task HandleError(HttpResponseMessage response)
         {
             if (!response.IsSuccessStatusCode)
             {
                 var error = await response.Content.ReadAsStringAsync();
                 throw new HttpRequestException(error);
-            }
-        }
-
-        // 145.2 добавляем в каждый вызов конечной точки логику токенов
-        void AddTokenHeader(string token)
-        {
-            // 154.1 Исправляем ошибки после удаления свойства из интерфейса репозитория ITokenRepository
-            if (_tokenRepository != null && !string.IsNullOrWhiteSpace(token))    /*_tokenRepository.Token*/
-            {
-                _httpClient.DefaultRequestHeaders.Remove(SD.TokenHeader);
-                _httpClient.DefaultRequestHeaders.Add(SD.TokenHeader, token);   /*_tokenRepository.Token*/
             }
         }
     }

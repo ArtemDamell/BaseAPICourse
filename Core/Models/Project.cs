@@ -1,12 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Text;
 
 
 namespace Core.Models
 {
-    // 34. Реализовываем модель Project
     public class Project
     {
         public int Id { get; set; }

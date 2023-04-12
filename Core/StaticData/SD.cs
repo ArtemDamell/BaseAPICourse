@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Core.StaticData
+﻿namespace Core.StaticData
 {
     public static class SD
     {

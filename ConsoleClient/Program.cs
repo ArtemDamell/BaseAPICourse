@@ -1,8 +1,4 @@
-﻿// 178. Для тестирования IdentityServer'а и доступа к API, создадим новый консольный проект ConsoleClient
-
-// 180. На этом этапе приходим в консоль
-// Создаём экземпляр HttpClient для взаимодействия с нашими сервисами
-using IdentityModel.Client;
+﻿using IdentityModel.Client;
 
 var client = new HttpClient();
 var disc = await client.GetDiscoveryDocumentAsync("https://localhost:5001");
@@ -31,5 +27,3 @@ if (token.IsError)
 
 Console.WriteLine(token.Json);
 Console.ReadLine();
-
-// 181. На этом этапе выставляем 3 проекта для запуска

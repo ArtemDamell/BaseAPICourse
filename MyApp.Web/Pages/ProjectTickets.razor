@@ -1,18 +1,12 @@
-﻿@*96. Создать компонент для вывода билетов проекта ProjectTickets*@
-@*96.1 Создаём компонент с маршрутом*@
-@page "/projects/{ProjectId:int}/tickets"
-
+﻿@page "/projects/{ProjectId:int}/tickets"
 
 @inject ITicketsScreen _db
 
-@*151. После этого в ProjectTickets добавить новый атрибут доступа только авторизованным пользователям*@
 @attribute [Authorize]
 
 <div class="row">
     <div class="col text-info"><h1>All tickets from project with ID: @ProjectId</h1></div>
 </div>
-
-@*103. Форма поиска (фильтр)*@
 <div class="row mb-3">
     <div class="col">
         <input type="text" class="form-control" @bind-value="searchFilter" />
@@ -20,7 +14,6 @@
     <div class="col-auto">
         <button type="button" class="btn btn-outline-primary" @onclick="SearchHandler">Search</button>
     </div>
-    @*105.7.1 Добавляем checkbox*@
     <div class="col-auto form-check form-switch  d-flex align-items-center">
         <input class="form-check-input" type="checkbox" id="myticket" @bind-value="ViewMyTickets" />
         <label class="form-check-label pt-1" for="myticket">View my tickets</label>
@@ -38,34 +31,12 @@
     }
     else if (tickets.Any())
     {
-        @*100. Извлекаем повторяющийся кусок кода в отдельный компонент DisplayTicket*@
         @foreach (var item in tickets)
         {
-            @*<div class="col-sm-12 col-md-6 col-lg-3">
-
-                <div class="card text-center border-dark mb-3">
-                <div class="card-header">
-                @item.Title
-                </div>
-                <div class="card-body text-dark">
-                <h5 class="card-title">Event: @item?.Project?.Name</h5>
-                <p class="card-text">@item.Description</p>
-                </div>
-                <div class="card-footer text-muted">
-                <p class="text-success">Event date: @((item.EventDate.HasValue) ?item?.EventDate?.ToShortDateString() : "-- NO DATA --")</p>
-                <p class="text-danger">Entered date: @((item.EnteredDate.HasValue) ?item?.EnteredDate?.ToShortDateString() : "-- NO DATA --")</p>
-                <p class="text-primary">Owner: @item?.Owner</p>
-                </div>
-                </div>
-
-                </div>*@
             <div class="col-sm-12 col-md-6 col-lg-3">
                 <DisplayTicket Ticket="item" ShowButtons="true" />
             </div>
         }
-        @*-------------------------------------------------------------------------*@
-
-        @*111. В компоненте ProjectTickets добавить кнопку добавления нового билета*@
         <div class="row justify-content-center">
             <div class="col-3">
                 <NavLink class="btn btn-success" href="@($"projects/{ProjectId}/addticket")">Add Ticket</NavLink>
@@ -104,7 +75,6 @@
     string searchFilter;
     string error;
 
-    // 105.7.2
     bool viewMyTickets = false;
     public bool ViewMyTickets
     {
@@ -139,5 +109,4 @@
         else
             error = $"Not found! Filter was {searchFilter}";
     }
-
 }

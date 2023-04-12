@@ -3,9 +3,12 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Core.ValidationAttributes
 {
-    // 40
     public class Ticket_EventDatePresentceValidator : ValidationAttribute
     {
+        /// <summary>
+        /// Validates the ticket object to ensure that the event date is present.
+        /// </summary>
+        /// <returns>ValidationResult.Success if the ticket is valid, otherwise a ValidationResult with an error message.</returns>
         protected override ValidationResult? IsValid(object? value, ValidationContext validationContext)
         {
             var ticket = validationContext.ObjectInstance as Ticket;

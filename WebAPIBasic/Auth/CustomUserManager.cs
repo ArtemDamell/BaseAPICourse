@@ -1,9 +1,7 @@
 ﻿namespace WebAPIBasic.Auth
 {
-    // 128. Создать в корне проекта папку Auth, в ней 2 класса: CustomerUserManager, CustomerTokenManager
     public class CustomUserManager : ICustomUserManager
     {
-        // 133. Создать демо данные для проверки функционала в CustomeUserManager
         Dictionary<string, string> _credentials = new Dictionary<string, string>()
         {
             { "bob", "password"},
@@ -11,23 +9,19 @@
         };
 
         private readonly ICustomTokenManager _customTokenManager;
+        public CustomUserManager(ICustomTokenManager customTokenManager) => _customTokenManager = customTokenManager;
 
-        // 130. Внедряем в классы зависимости друг друга
-        public CustomUserManager(ICustomTokenManager customTokenManager)
-        {
-            _customTokenManager = customTokenManager;
-        }
-
+        /// <summary>
+        /// Authenticates the user with the given username and password and returns a token if successful.
+        /// </summary>
+        /// <param name="userName">The username of the user.</param>
+        /// <param name="password">The password of the user.</param>
+        /// <returns>A token if authentication is successful, otherwise an empty string.</returns>
         public string? Authenticate(string userName, string password)
         {
-            // 1. Validate user
-            // 133.1
-            //if (!_credentials[userName].Equals(password))
-            //    return string.Empty;
             if (!string.IsNullOrWhiteSpace(userName) && !_credentials[userName].Equals(password))
                 return string.Empty;
 
-            // 2. Generate token
             var token = _customTokenManager.CreateToken(userName);
             return token;
         }

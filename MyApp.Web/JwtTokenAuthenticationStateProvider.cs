@@ -17,6 +17,10 @@ namespace MyApp.Web
             this.authenticationRepository = authenticationRepository;
         }
 
+        /// <summary>
+        /// Gets the authentication state of the user.
+        /// </summary>
+        /// <returns>The authentication state of the user.</returns>
         public override async Task<AuthenticationState> GetAuthenticationStateAsync()
         {
             JwtSecurityTokenHandler tokenHandler = new JwtSecurityTokenHandler();
@@ -42,14 +46,10 @@ namespace MyApp.Web
                     return new AuthenticationState(principal);
                 }
                 else
-                {
                     return new AuthenticationState(new ClaimsPrincipal(new ClaimsIdentity()));
-                }
             }
             else
-            {
                 return new AuthenticationState(new ClaimsPrincipal(new ClaimsIdentity()));
-            }
         }
     }
 }

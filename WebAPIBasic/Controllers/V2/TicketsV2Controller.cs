@@ -4,29 +4,14 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Diagnostics;
-using System.Linq;
-using WebAPIBasic.Filters;
 using WebAPIBasic.Filters.V2;
 using WebAPIBasic.QueryFilters;
 
-// 58. Копируем контроллер для второй версии  
 namespace WebAPIBasic.Controllers.V2
 {
-    // 62.1/62.3 Добавляем атрибут явного указания версии
     [ApiVersion("2.0")]
     [ApiController]
-    // 65. Комментирую оригинальный маршрут и указываю версию в новом
     [Route("api/tickets")]
-    //[Route("api/v{v:apiVersion}/tickets")]
-
-    // 66. При передачи версии API через строку запроса, просто добавляем к адресу параметр ?api-version=2.0
-
-    // 120.2 Добавить новый фильтр в контроллер
-    //[APIKeyAuthFilter]
-    // 136. Заменить на всех контроллерах ApiKeyAuthFilter на CustomeTokenAuthFilterAttribute
-    //[CustomeTokenAuthFilter]
-
-    // 177.1 Т.К. у нас уже другой сервер, отвечающий за проверку токенов, в контроллерах меняем наш фильтр ([CustomeTokenAuthFilter]) на простой [Authorize]
     [Authorize]
     public class TicketsV2Controller : ControllerBase
     {
@@ -36,49 +21,41 @@ namespace WebAPIBasic.Controllers.V2
             _db = db;
         }
 
+        /// <summary>
+        /// Gets a list of tickets based on the query filter.
+        /// </summary>
+        /// <param name="ticketQueryFilter">The query filter.</param>
+        /// <returns>A list of tickets.</returns>
         [HttpGet]
-        // 80.1 Новый фильтр в метод GET в параметр
         public async Task<IActionResult> Get([FromQuery] TicketQueryFilter ticketQueryFilter)
         {
             try
             {
                 IQueryable<Ticket> queryTickets = _db.Tickets;
-                // 80.2 Добавляем логику фильтра
                 if (ticketQueryFilter is not null)
                 {
                     if (ticketQueryFilter.Id.HasValue)
                         queryTickets = queryTickets.Where(x => x.Id == ticketQueryFilter.Id);
-                    // 87.4 Редактируем TicketV2Controller ******************
                     if (!string.IsNullOrWhiteSpace(ticketQueryFilter.TitleOrDescription))
                         queryTickets = queryTickets.Where(x => x.Title.ToLower().Contains(ticketQueryFilter.TitleOrDescription.ToLower()/*, StringComparison.OrdinalIgnoreCase*/)
-                        || x.Description.ToLower().Contains(ticketQueryFilter.TitleOrDescription.ToLower())); // <-- StringComparison.OrdinalIgnoreCase сравнивает строки, как будто они преобразованы в верхний регистр, без учёта культуры
-                    //if (!string.IsNullOrWhiteSpace(ticketQueryFilter.Description))
-                    //    queryTickets = queryTickets.Where(x => x.Description.ToLower().Contains(ticketQueryFilter.Description.ToLower()/*, StringComparison.OrdinalIgnoreCase*/));
-                    // --> 87.5 Возвращаемся в TicketRepository
-                    // ******************************************************
-                    //if (!await queryTickets.AnyAsync())
-                    //    return new List<Ticket>();
+                        || x.Description.ToLower().Contains(ticketQueryFilter.TitleOrDescription.ToLower()));
 
                     return Ok(await queryTickets.ToListAsync().ConfigureAwait(false));
                 }
-                // *****************************
-
-                //allTickets = await _db.Tickets.ToListAsync();
             }
             catch (Exception ex)
             {
                 Debug.WriteLine(ex.Message);
                 return BadRequest(ex.Message);
             }
-
-            //if (allTickets is null)
-            //    return NotFound();
-
-            //return Ok(allTickets);
-
             return BadRequest();
         }
 
+        /// <summary>
+        /// Gets a ticket by its id.
+        /// </summary>
+        /// <param name="id">The id of the ticket.</param>
+        /// <returns>The ticket with the specified id.</returns>
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById(int id)
         {
@@ -99,8 +76,12 @@ namespace WebAPIBasic.Controllers.V2
             return Ok(ticket);
         }
 
+        /// <summary>
+        /// Creates a new ticket in the database.
+        /// </summary>
+        /// <param name="ticket">The ticket to be created.</param>
+        /// <returns>The created ticket.</returns>
         [HttpPost]
-        // 60.1 Добавляем атрибут
         [Ticket_EnshureDescriptionPresentActionFilter]
         public async Task<IActionResult> Post([FromBody] Ticket ticket)
         {
@@ -122,8 +103,13 @@ namespace WebAPIBasic.Controllers.V2
             }
         }
 
+        /// <summary>
+        /// Updates a ticket in the database.
+        /// </summary>
+        /// <param name="id">The id of the ticket to update.</param>
+        /// <param name="ticket">The ticket object to update.</param>
+        /// <returns>NoContent if successful, BadRequest if the id does not match the ticket, or StatusCode(500) if an exception occurs.</returns>
         [HttpPut("{id}")]
-        // 60.1 Добавляем атрибут
         [Ticket_EnshureDescriptionPresentActionFilter]
         public async Task<IActionResult> Put(int id, [FromBody] Ticket ticket)
         {
@@ -143,6 +129,11 @@ namespace WebAPIBasic.Controllers.V2
             return NoContent();
         }
 
+        /// <summary>
+        /// Deletes a ticket from the database.
+        /// </summary>
+        /// <param name="id">The id of the ticket to delete.</param>
+        /// <returns>The deleted ticket.</returns>
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {

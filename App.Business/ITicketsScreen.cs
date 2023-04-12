@@ -2,7 +2,6 @@
 
 namespace MyApp.Business
 {
-    // 95. Интерфейс из класса TicketsScreen
     public interface ITicketsScreen
     {
         Task<int> CreateTicketAsync(Ticket ticketForCreation);

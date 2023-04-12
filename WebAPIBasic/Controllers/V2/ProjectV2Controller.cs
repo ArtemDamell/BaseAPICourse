@@ -8,38 +8,35 @@ using Microsoft.EntityFrameworkCore;
 using WebAPIBasic.Filters;
 using WebAPIBasic.QueryFilters;
 
-// 56. Переписатл все методы, чтобы избавиться от грязи в коде
 namespace WebAPIBasic.Controllers.V2
 {
-    // 62.2/62.3 Добавляем атрибут явного указания версии
     [ApiVersion("2.0")]
     [ApiController]
     [Route("api/projects")]
-
-    // 120.1 Добавить новый фильтр в контроллер
-    //[APIKeyAuthFilter]
-    // 136. Заменить на всех контроллерах ApiKeyAuthFilter на CustomeTokenAuthFilterAttribute
-    //[CustomeTokenAuthFilter]
-
-    // 177.1 Т.К. у нас уже другой сервер, отвечающий за проверку токенов, в контроллерах меняем наш фильтр ([CustomeTokenAuthFilter]) на простой [Authorize]
     [Authorize(policy: "WebApiScope")]
     public class ProjectV2Controller : ControllerBase
     {
 
         private readonly AppDbContext _db;
         private readonly IMapper _mapper;
+
         public ProjectV2Controller(AppDbContext db, IMapper mapper)
         {
             _db = db;
             _mapper = mapper;
         }
 
+        /// <summary>
+        /// Gets a list of all projects from the database.
+        /// </summary>
         [HttpGet]
-        public async Task<IActionResult> Get()
-        {
-            return Ok(await _db.Projects.ToListAsync());
-        }
+        public async Task<IActionResult> Get() => Ok(await _db.Projects.ToListAsync());
 
+        /// <summary>
+        /// Gets a project by its id.
+        /// </summary>
+        /// <param name="id">The id of the project.</param>
+        /// <returns>The project with the specified id.</returns>
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById(int id)
         {
@@ -51,17 +48,12 @@ namespace WebAPIBasic.Controllers.V2
             return Ok(project);
         }
 
-        // 105.6 Меняем метод получения
-        //[HttpGet]
-        //[Route("/api/projects/{pId}/tickets")]
-        //public async Task<IActionResult> GetProjectTicket(int pId)
-        //{
-        //    var tickets = await _db.Tickets.Where(x => x.ProjectId == pId).ToListAsync();
-
-        //    if (tickets is null || !tickets.Any())
-        //        return NotFound();
-        //    return Ok(tickets);
-        //}
+        /// <summary>
+        /// Gets a list of tickets for a given project Id, with optional filtering by owner.
+        /// </summary>
+        /// <param name="pId">The project Id.</param>
+        /// <param name="filter">Optional filter for owner.</param>
+        /// <returns>A list of tickets for the given project Id.</returns>
         [HttpGet]
         [Route("/api/projects/{pId:int}/tickets")]
         public async Task<IActionResult> GetProjectTicket(int pId, [FromQuery] ProjectTicketQueryFilter filter)
@@ -76,10 +68,13 @@ namespace WebAPIBasic.Controllers.V2
             if (listOfTickets is null || !listOfTickets.Any())
                 return NotFound();
             return Ok(listOfTickets);
-
-            // --> После проверки на работоспособность, переходим в ProjectTickets проекта MyApp.Web
         }
 
+        /// <summary>
+        /// Creates a new project and saves it to the database.
+        /// </summary>
+        /// <param name="project">The project to be created.</param>
+        /// <returns>The created project.</returns>
         [HttpPost]
         public async Task<IActionResult> Post([FromBody] Project project)
         {
@@ -91,6 +86,12 @@ namespace WebAPIBasic.Controllers.V2
                 project);
         }
 
+        /// <summary>
+        /// Updates a project with the given id.
+        /// </summary>
+        /// <param name="id">The id of the project to update.</param>
+        /// <param name="project">The project object to update.</param>
+        /// <returns>NoContent if the project was updated successfully, BadRequest if the id does not match the project, NotFound if the project does not exist, or an exception if an error occurs.</returns>
         [HttpPut("{id}")]
         public async Task<IActionResult> Put(int id, Project project)
         {
@@ -114,6 +115,11 @@ namespace WebAPIBasic.Controllers.V2
             return NoContent();
         }
 
+        /// <summary>
+        /// Deletes a project from the database.
+        /// </summary>
+        /// <param name="id">The id of the project to delete.</param>
+        /// <returns>The deleted project.</returns>
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
@@ -128,7 +134,11 @@ namespace WebAPIBasic.Controllers.V2
             return Ok(project);
         }
 
-        // 75. Добавить в ProjectsController логику получения всех админов по ID мироприятия
+        /// <summary>
+        /// Gets all Event Administrators associated with a given Project Id.
+        /// </summary>
+        /// <param name="pId">The Project Id.</param>
+        /// <returns>A list of Event Administrator DTOs.</returns>
         [HttpGet]
         [Route("/api/projects/{pId}/eventadmins")]
         public async Task<IActionResult> GetAdminsById(int pId)

@@ -3,7 +3,6 @@ using Swashbuckle.AspNetCore.SwaggerGen;
 
 namespace WebAPIBasic.Swagger
 {
-    // 63.1/63.2 Добавляем класс для заголовка в swagger
     public class CustomHeaderSwaggerAttribute : IOperationFilter
     {
         public void Apply(OpenApiOperation operation, OperationFilterContext context)
@@ -23,5 +22,4 @@ namespace WebAPIBasic.Swagger
             });
         }
     }
-    // --> Далее конфигурируем в классе Program
 }

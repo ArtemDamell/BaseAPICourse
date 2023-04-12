@@ -4,21 +4,12 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Diagnostics;
-using WebAPIBasic.Filters;
 
-// 56. Переписатл все методы, чтобы избавиться от грязи в коде
 namespace WebAPIBasic.Controllers
 {
-    // 62.3/62.3 Добавляем атрибут явного указания версии
     [ApiVersion("1.0")]
     [ApiController]
     [Route("api/[controller]")]
-    // 120.2 Добавить новый фильтр в контроллер
-    //[APIKeyAuthFilter]
-    // 136. Заменить на всех контроллерах ApiKeyAuthFilter на CustomeTokenAuthFilterAttribute
-    //[CustomeTokenAuthFilter]
-
-    // 177.1 Т.К. у нас уже другой сервер, отвечающий за проверку токенов, в контроллерах меняем наш фильтр ([CustomeTokenAuthFilter]) на простой [Authorize]
     [Authorize(policy: "write")]
     public class TicketsController : ControllerBase
     {
@@ -28,6 +19,12 @@ namespace WebAPIBasic.Controllers
             _db = db;
         }
 
+        /// <summary>
+        /// Retrieves a list of all tickets from the database.
+        /// </summary>
+        /// <returns>
+        /// A list of all tickets from the database, or a NotFound result if no tickets are found.
+        /// </returns>
         [HttpGet]
         public async Task<IActionResult> Get()
         {
@@ -48,6 +45,11 @@ namespace WebAPIBasic.Controllers
             return Ok(allTickets);
         }
 
+        /// <summary>
+        /// Gets a ticket by its id.
+        /// </summary>
+        /// <param name="id">The id of the ticket.</param>
+        /// <returns>The ticket with the specified id.</returns>
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById(int id)
         {
@@ -68,6 +70,11 @@ namespace WebAPIBasic.Controllers
             return Ok(ticket);
         }
 
+        /// <summary>
+        /// Creates a new ticket in the database.
+        /// </summary>
+        /// <param name="ticket">The ticket to be created.</param>
+        /// <returns>The created ticket.</returns>
         [HttpPost]
         public async Task<IActionResult> Post([FromBody] Ticket ticket)
         {
@@ -89,6 +96,12 @@ namespace WebAPIBasic.Controllers
             }
         }
 
+        /// <summary>
+        /// Updates a ticket in the database.
+        /// </summary>
+        /// <param name="id">The id of the ticket to update.</param>
+        /// <param name="ticket">The ticket object to update.</param>
+        /// <returns>NoContent if successful, BadRequest if the id does not match the ticket, or StatusCode(500) if an exception occurs.</returns>
         [HttpPut("{id}")]
         public async Task<IActionResult> Put(int id, [FromBody] Ticket ticket)
         {
@@ -108,6 +121,11 @@ namespace WebAPIBasic.Controllers
             return NoContent();
         }
 
+        /// <summary>
+        /// Deletes a ticket from the database.
+        /// </summary>
+        /// <param name="id">The id of the ticket to delete.</param>
+        /// <returns>The deleted ticket.</returns>
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {

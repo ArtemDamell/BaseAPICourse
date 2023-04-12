@@ -4,15 +4,15 @@ using Microsoft.AspNetCore.Mvc.Filters;
 
 namespace WebAPIBasic.Filters.V2
 {
-    // 59.1 Создаём Action Filter
     public class Ticket_EnshureDescriptionPresentActionFilterAttribute : ActionFilterAttribute
     {
-        // 59.2 --> После назначения переопределения, до реализации, идём в модель Ticket и создаём в нём метод валидации
+        /// <summary>
+        /// Validates the ticket description before executing the action.
+        /// </summary>
         public override void OnActionExecuting(ActionExecutingContext context)
         {
             base.OnActionExecuting(context);
 
-            // 59.3/59.3 Реализовываем фильтр
             var ticket = context.ActionArguments["ticket"] as Ticket;
 
             if (ticket != null && !ticket.ValidateDescription())

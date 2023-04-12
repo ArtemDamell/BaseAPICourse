@@ -1,50 +1,46 @@
 ﻿using MyApp.Repository.ApiClient;
 using Core.Models;
-using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace MyApp.Repository
 {
-    // 84. Создаём класс для доступа к проектам
-    // Теперь нам надо использовать ранее созданный класс. Мы можем его использовать
-    // Напрямую, или же через интерфейс. Переходим в WebApiExecuter, нажимаем на название класса ПКМ
-    // И экстрактируем Interface (Extract Interface) и нажимаем OK
     public class ProjectRepository : IProjectRepository
     {
         private readonly IWebApiExecuter _webApiExecuter;
 
-        // 84.1 Внедряем зависимость WebApiExecuter через интерфейс IWebApiExecuter
-        // Таким образом мы следуем основному принципу паттерна внедрения зависимостей,
-        // Который гласит, что объекты высокого уровня не должны зависить от объектов уровнем ниже
         public ProjectRepository(IWebApiExecuter webApiExecuter)
         {
             _webApiExecuter = webApiExecuter;
         }
 
-        // 84.2 Создаём метод получения всех проектов
-        public async Task<IEnumerable<Project>> GetAsync()
+        /// <summary>
+        /// Gets a list of projects asynchronously.
+        /// </summary>
+        /// <returns>A task that represents the asynchronous operation of getting a list of projects.</returns>
+        public Task<IEnumerable<Project>> GetAsync()
         {
-            return await _webApiExecuter.InvokeGet<IEnumerable<Project>>("api/projects?api-version=2.0");
+            return _webApiExecuter.InvokeGet<IEnumerable<Project>>("api/projects?api-version=2.0");
         }
 
-        // 84.3 Создаём метод получения проекта по ID
-        public async Task<Project> GetByIdAsync(int id)
+        /// <summary>
+        /// Retrieves a project by its id.
+        /// </summary>
+        /// <param name="id">The id of the project to retrieve.</param>
+        /// <returns>A task that represents the asynchronous operation. The task result contains the project.</returns>
+        public Task<Project> GetByIdAsync(int id)
         {
-            return await _webApiExecuter.InvokeGet<Project>($"api/projects/{id}?api-version=2.0");
+            return _webApiExecuter.InvokeGet<Project>($"api/projects/{id}?api-version=2.0");
         }
 
-        // 84.4 Создаём метод получения всех билетов в проекте по ID проекта
-        //public async Task<IEnumerable<Ticket>> GetProjectTicketsAsync(int projectId)
-        //{
-        //    return await _webApiExecuter.InvokeGet<IEnumerable<Ticket>>($"api/projects/{projectId}/tickets");
-        //}
-
-        // 105.2
-        public async Task<IEnumerable<Ticket>> GetProjectTicketsAsync(int projectId, string? filter = null)
+        /// <summary>
+        /// Gets the project tickets asynchronously.
+        /// </summary>
+        /// <param name="projectId">The project identifier.</param>
+        /// <param name="filter">The filter.</param>
+        /// <returns>A task that represents the asynchronous operation.</returns>
+        public Task<IEnumerable<Ticket>> GetProjectTicketsAsync(int projectId, string? filter = null)
         {
-            // 105.4 Реализовываем логику
             string uri = $"api/projects/{projectId}/tickets";
 
             if (!string.IsNullOrWhiteSpace(filter))
@@ -52,28 +48,33 @@ namespace MyApp.Repository
             else
                 uri += "?api-version=2.0";
 
-            // *****************************
-            return await _webApiExecuter.InvokeGet<IEnumerable<Ticket>>(uri);
-            // Делаем PULL метода в интерфейс для изменений
+            return _webApiExecuter.InvokeGet<IEnumerable<Ticket>>(uri);
         }
- 
+
+        /// <summary>
+        /// Creates a new project asynchronously.
+        /// </summary>
+        /// <param name="project">The project to create.</param>
+        /// <returns>The Id of the created project.</returns>
         public async Task<int> CreateAsync(Project project)
         {
             project = await _webApiExecuter.InvokePost("api/projects?api-version=2.0", project);
             return project.Id;
         }
 
-        // 84.6 Создаём метод обновления проекта
-        public async Task UpdateAsync(Project project)
-        {
-            await _webApiExecuter.InvokePut($"api/projects/{project.Id}?api-version=2.0", project);
-        }
+        /// <summary>
+        /// Updates the project asynchronously.
+        /// </summary>
+        /// <param name="project">The project to update.</param>
+        /// <returns>A task that represents the asynchronous operation.</returns>
+        public Task UpdateAsync(Project project) => _webApiExecuter.InvokePut($"api/projects/{project.Id}?api-version=2.0", project);
 
-        // 84.7 Создаём метод обновления проекта
-        public async Task DeleteAsync(int id)
-        {
-            await _webApiExecuter.InvokeDelete($"api/projects/{id}?api-version=2.0");
-        }
+        /// <summary>
+        /// Deletes a project with the specified id.
+        /// </summary>
+        /// <param name="id">The id of the project to delete.</param>
+        /// <returns>A task that represents the asynchronous delete operation.</returns>
+        public Task DeleteAsync(int id) => _webApiExecuter.InvokeDelete($"api/projects/{id}?api-version=2.0");
     }
 }
 

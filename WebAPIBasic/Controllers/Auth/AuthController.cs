@@ -3,42 +3,36 @@ using WebAPIBasic.Auth;
 
 namespace WebAPIBasic.Controllers.Auth
 {
-    // 127. Создать в проекте WebAPI в папке Controllers новую подпапку Auth, в ней контроллер AuthController
     [ApiController]
     public class AuthController : ControllerBase
     {
-        // 132. Внедряем зависимость в контроллер AuthController
         private readonly ICustomUserManager _customUserManager;
         private readonly ICustomTokenManager _customTokenManager;
 
-        
         public AuthController(ICustomUserManager customUserManager, ICustomTokenManager customTokenManager)
         {
             _customUserManager = customUserManager;
             _customTokenManager = customTokenManager;
         }
-        // 132 ****************************************************
 
-        //[HttpPost]
-        //[Route("/authenticate")]
-        //// 127.1 Назначаем метод аутентификации
-        //public async Task<string> AuthenticateAsync(string username, string password)
-        //{
-        //    var result = await Task.FromResult(_customUserManager.Authenticate(username, password));
-        //    return result;
-        //}
-
-        // 146.2 Получить ошибку, перейти в контроллер AuthController и добавить дополнительную логику
+        /// <summary>
+        /// Authenticates a user with the given credentials.
+        /// </summary>
+        /// <param name="userCredential">The user credentials.</param>
+        /// <returns>A task that represents the asynchronous operation, containing the authentication result.</returns>
         [HttpPost]
         [Route("/authenticate")]
-        // 127.1 Назначаем метод аутентификации
         public Task<string?> AuthenticateAsync(UserCredential userCredential)
         {
             var result = Task.FromResult(_customUserManager.Authenticate(userCredential.userName, userCredential.password));
             return result;
         }
 
-        // 127.2
+        /// <summary>
+        /// Verifies the given token.
+        /// </summary>
+        /// <param name="token">The token to verify.</param>
+        /// <returns>A boolean indicating whether the token is valid.</returns>
         [HttpGet]
         [Route("/verifytoken")]
         public Task<bool> VerifyTokenAsync(Token token)
@@ -47,7 +41,11 @@ namespace WebAPIBasic.Controllers.Auth
             return result;
         }
 
-        // 127.3
+        /// <summary>
+        /// Gets the user information by token.
+        /// </summary>
+        /// <param name="token">The token.</param>
+        /// <returns>The user information.</returns>
         [HttpPost]
         [Route("/getuserinfo")]
         public Task<string?> GetUserInfoByTokenAsync(Token token)
@@ -57,7 +55,6 @@ namespace WebAPIBasic.Controllers.Auth
         }
     }
 
-    // 146.1 Получить ошибку, перейти в контроллер AuthController и добавить дополнительную логику
     public class UserCredential
     {
         public string userName { get; set; }

@@ -1,5 +1,4 @@
-﻿
-namespace MyApp.Business
+﻿namespace MyApp.Business
 {
     public interface IAuthenticationScreen
     {

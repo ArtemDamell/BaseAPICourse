@@ -1,10 +1,3 @@
-/*
- Так, как класс StartUp отсутствует в .NET 6
- Все конфигурации происходят прямо тут
- */
-
-//using WebAPIBasic.Filters;
-
 using DataStore.EF;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Mvc;
@@ -12,31 +5,20 @@ using WebAPIBasic.Auth;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// 131. Добавить зависимости в класс Program WebAPI проекта (симулируем ситуацию, когда у нас есть только один клиент)
-// 165. В классе Program заменить зависимость builder.Services.AddSingleton<ICustomTokenManager, CustomTokenManager>();
-//builder.Services.AddSingleton<ICustomTokenManager, CustomTokenManager>();
 builder.Services.AddSingleton<ICustomTokenManager, JwtTokenManager>();
 builder.Services.AddSingleton<ICustomUserManager, CustomUserManager>();
 
-
-/*Это место специально для конфигурации зависимостей*/
-
-// 2.2 Конфигурируем зависимость контроллеров маршрута
 builder.Services.AddControllers();
-// ---------------------------------------------------
-
-// // 176.2 Конфигурируем Аутентификацию для API сервера
 builder.Services.AddAuthentication("Bearer")
                        .AddJwtBearer("Bearer", options =>
                        {
-                           // Указываем адрес IdentityServer'а из файла launchsettings.json
                            options.Authority = "https://localhost:5001";
                            options.TokenValidationParameters = new Microsoft.IdentityModel.Tokens.TokenValidationParameters
                            {
                                ValidateAudience = false
                            };
                        });
-// 183. На данном этапе наш API сервер принимает абсолютно все token'ы, исправим это. Перейти в класс Program проекта WebAPI и добавить сервис авторизации для проверки валидности и подлинности ключа.
+
 builder.Services.AddAuthorization(options =>
 {
     options.AddPolicy("WebApiScope", policy =>
@@ -51,49 +33,21 @@ builder.Services.AddAuthorization(options =>
         policy.RequireClaim("scope", "write");
     });
 });
-// 184. --> После этого применить эту политику в контроллере Project
-
-// 29. Добавляем опции к нашим контроллерам и через них устанавливаем глобальный фильтр
-//builder.Services.AddControllers(options =>
-//{
-//    options.Filters.Add<DiscontinueVersion1ResourseFilter>();
-//});
-
-// 61. Конфигурируем библиотеку Versioning
 builder.Services.AddApiVersioning(options =>
 {
-    // Версия по умолчанию
     options.AssumeDefaultVersionWhenUnspecified = true;
     options.DefaultApiVersion = new ApiVersion(1, 0);
-
-    // Возвращаем в ответе использованную версию API
     options.ReportApiVersions = true;
-
-    // Настройка для поиска версии в заголовках запроса
-    // 64. Закомментировать в классе Pogram метод указания заголовка для версии
-    //options.ApiVersionReader = new HeaderApiVersionReader("X-API-Version");
 });
-
-// 73. Внедрить зависимость AutoMapper
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
-
-// 48 Конфигурируем EF
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-// 7.2 Конфигурируем swagger
 builder.Services.AddSwaggerGen(x =>
 {
     x.SwaggerDoc("v1", new() { Title = "Web API Base Course", Version = "v1" });
-
-    //78.2 / 78.2 Конфигурируем поддержку версий в Swagger
     x.SwaggerDoc("v2", new() { Title = "Web API Base Course", Version = "v2" });
-
-    // 63.2/63.2 Конфигурируем заголовок для версии API
-    //x.OperationFilter<CustomHeaderSwaggerAttribute>();
 });
-
-// 93.1 Для того, чтобы подружить API и WebAssambly из-за разных доменов, конфигурируем в Program проекта WebAPI AddCorse
 builder.Services.AddCors(options =>
 {
     options.AddDefaultPolicy(builder =>
@@ -103,19 +57,12 @@ builder.Services.AddCors(options =>
         .AllowAnyMethod();
     });
 });
-
-// 77. Конфигурируем библиотеку в классе Program
 builder.Services.AddVersionedApiExplorer( options =>
 {
     options.GroupNameFormat = "'v'VVV"; 
 });
-// 77.************************************************************
-
-/****************************************************/
 
 var app = builder.Build();
-
-// 7.1 Добавляем функционал Swagger
 if (app.Environment.IsDevelopment())
 {
     app.UseDeveloperExceptionPage();
@@ -123,25 +70,12 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI(x => {
         x.SwaggerEndpoint("/swagger/v1/swagger.json", "Web API Basic Course v1");
-        //78.1 / 78.2 Конфигурируем поддержку версий в Swagger
         x.SwaggerEndpoint("/swagger/v2/swagger.json", "Web API Basic Course v2");
         });
 }
-
-// 93.2 Подключаем Middleware политики
 app.UseCors();
-
-// 176.1 Добавить middleware в класс Program проекта WebAPI
 app.UseAuthentication();
 app.UseAuthorization();
-
-// Тут у нас находится маршрут по умолчанию
-/*
- 2.1 Заменяем стандартную конечную точку маршрута на контроллер маршрутизации
- Но просто указать его не достаточно, его необходимо сконфигурировать
- Раньше это делалось в методе ConfigureServices класса Startup
- */
-//app.MapGet("/", () => "Hello World!");
 app.MapControllers();
 
 app.Run();

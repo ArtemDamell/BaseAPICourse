@@ -5,13 +5,9 @@ using System.Text;
 
 namespace WebAPIBasic.Auth
 {
-    // 164. В папке Auth проекта API создать новый класс JwtTokenManager
     public class JwtTokenManager : ICustomTokenManager
     {
-        // 164.1 Внедряем зависимость IConfiguration
         private readonly IConfiguration _configuration;
-
-        // 164.2 Внедряем зависимость токен хэндлера
         private JwtSecurityTokenHandler _tokenHandler;
         private byte[] _secretKey;
 
@@ -21,6 +17,12 @@ namespace WebAPIBasic.Auth
             _tokenHandler = new JwtSecurityTokenHandler();
             _secretKey = Encoding.ASCII.GetBytes(configuration.GetValue<string>("JwtSecretKey"));
         }
+
+        /// <summary>
+        /// Creates a token for the given user name.
+        /// </summary>
+        /// <param name="userName">The user name.</param>
+        /// <returns>The token.</returns>
         public string CreateToken(string userName)
         {
             var tokenDescriptor = new SecurityTokenDescriptor
@@ -42,6 +44,11 @@ namespace WebAPIBasic.Auth
             return _tokenHandler.WriteToken(token);
         }
 
+        /// <summary>
+        /// Retrieves the user information from the given token.
+        /// </summary>
+        /// <param name="token">The token to use for retrieving the user information.</param>
+        /// <returns>The user information associated with the given token.</returns>
         public string? GetUserInformationByToken(string? token)
         {
             if (string.IsNullOrWhiteSpace(token))
@@ -55,6 +62,11 @@ namespace WebAPIBasic.Auth
             return null;
         }
 
+        /// <summary>
+        /// Verifies the given token is valid or not
+        /// </summary>
+        /// <param name="token">The token to be verified</param>
+        /// <returns>True if the token is valid, false otherwise</returns>
         public bool VerifyToken(string token)
         {
             if (string.IsNullOrWhiteSpace(token))
@@ -80,7 +92,7 @@ namespace WebAPIBasic.Auth
             {
                 return false;
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 throw new Exception(ex.Message);
             }
